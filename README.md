@@ -10,7 +10,7 @@ Features:
   - Programming tools
   - game launchers
 - (Apply default settings)
-- Create a consistent folder structure for the user 
+- Create a consistent folder structure for the user
 - Clone a list of mandatory git repositories.
 - Check System Integrity
   - SystemHealth
@@ -21,3 +21,48 @@ Features:
   - update windows
   - (update graphics drivers)
   - update powershell modules
+
+
+## Best Practices
+
+```
+Best Practices Demonstrated
+
+CmdletBinding & parameters
+
+Enables -Verbose, -Debug, -WhatIf automatically.
+
+Use [Parameter()] attributes to make parameters mandatory or optional.
+
+Clear Verb-Noun name
+
+Install-App follows PowerShell conventions.
+
+Inside your module, prefix with MSS if you want: Install-MSSApp.
+
+Help comments (<# #>)
+
+.SYNOPSIS, .DESCRIPTION, .PARAMETER, .EXAMPLE → essential for discoverability and Get-Help.
+
+Error handling with try/catch/finally
+
+Catches runtime errors and logs them cleanly.
+
+finally ensures cleanup or logging happens regardless of success.
+
+Verbose output
+
+Write-Verbose allows users to see details when needed, without cluttering default output.
+
+Dry-run / WhatIf support
+
+Optional simulation mode prevents accidental changes.
+
+Self-contained logic
+
+Function can read configuration if needed, but avoids hardcoding paths beyond placeholders.
+
+Return meaningful results
+
+Could return success/failure object, path installed, or version info.
+```

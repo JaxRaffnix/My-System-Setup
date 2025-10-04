@@ -2,7 +2,7 @@
   "ModuleVersion": "1.0.0",
   "Author": "Jan Hoegen",
   "Description": "This PowerShell Setups called My-System-Setup (MSS) simplifies the device configuration for Windows machines.",
-  "ProjectUri": "",
+  "ProjectUri": "https://github.com/JaxRaffnix/My-System-Setup",
   "FunctionsToExport": [""],
   "PowerShellVersion": "5.1",
   "IgnoreFiles": [".git", ".gitignore", ".vscode", "My-System-Setup.json", "README.md", "LICENSE"]
