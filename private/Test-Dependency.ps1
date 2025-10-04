@@ -64,7 +64,7 @@ function Test-Dependency {
         }
         elseif ($Module) {
             Write-Verbose "Trying to install PowerShell module: $Source ..."
-            Install-PSModule -Name $Source
+            Install-PSModule -ModuleName $Source
         }
         else {
             throw "Specify either -App or -Module for $Command."

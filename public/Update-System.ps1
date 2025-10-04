@@ -56,7 +56,7 @@ function Update-System {
     if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
         Write-Verbose "Updating PowerShell modules..."
         try {
-            gsudo Update-Module -Force
+            gsudo Update-Module -Force -Verbose
         } catch {
             Write-Error "Failed to update PowerShell modules: $_"
         }
@@ -74,7 +74,7 @@ function Update-System {
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
-            Remove-DesktopShortcuts -OldShortCuts $AllowedShortCuts   
+            Remove-DesktopShortcuts -AllowedShortCuts $AllowedShortCuts   
         }
     }
          
@@ -83,7 +83,7 @@ function Update-System {
     if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
         Write-Verbose "Updating Windows..."
         try {
-            Test-Dependency PSWindowsUpdate -Module
+            Test-Dependency PSWindowsUpdate -Module -Source PSWindowsUpdate
             gsudo Get-WindowsUpdate -Download -Install -AcceptAll -ErrorAction Stop
 
             if ((gsudo Get-WURebootStatus).RebootRequired) {
