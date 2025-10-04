@@ -16,6 +16,9 @@ function Update-System {
     .PARAMETER UpdateApps
         Switch to enable updating applications via winget.
 
+    .PARAMETER UpdatePip
+        Switch to enable updating Python packages installed via pip.
+
     .PARAMETER All
         If specified, enables all update types.
 
@@ -31,74 +34,84 @@ function Update-System {
         [switch]$UpdateWindows,
         [switch]$UpdatePSModules,
         [switch]$UpdateApps,
+        [switch]$UpdatePip,
         [switch]$All
     )
 
-    try {
-        # Ensure dependencies
-        Test-Dependency -Command "gsudo" -AppId "gerardog.gsudo"
-        Test-Dependency -Command "winget" -AppId "Microsoft.Winget.Source"
+    # Handle -All flag
+    if ($All) {
+        $UpdateWindows   = $true
+        $UpdatePSModules = $true
+        $UpdateApps      = $true
+        $UpdatePip       = $true
+    }
 
-        # Enable gsudo cache (avoids repeated elevation prompts)
-        gsudo cache on | Out-Null
+    # Ensure dependencies
+    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
 
-        # Collect allowed shortcuts (before updates may add new ones)
-        $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
-                            Select-Object -ExpandProperty Name
+    # Enable gsudo cache (avoids repeated elevation prompts)
+    gsudo cache on | Out-Null
 
-        # Handle -All flag
-        if ($All) {
-            $UpdateWindows   = $true
-            $UpdatePSModules = $true
-            $UpdateApps      = $true
-        }
-
-        # PowerShell Modules
-        if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
-            Write-Verbose "Updating PowerShell modules..."
-            try {
-                gsudo Update-Module -Force
-            } catch {
-                Write-Error "Failed to update PowerShell modules: $_"
-            }
-        }
-
-        # Applications via winget
-        if ($UpdateApps -and $PSCmdlet.ShouldProcess("Applications", "Update")) {
-            Write-Verbose "Updating applications via winget..."
-            try {
-                gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
-                    --disable-interactivity --include-unknown --include-pinned --silent --force
-            } catch {
-                Write-Error "Failed to update applications via winget: $_"
-            }
-        }
-
-        # Remove unwanted desktop shortcuts (after updates may add them back)
+    # PowerShell Modules
+    if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
+        Write-Verbose "Updating PowerShell modules..."
         try {
-            Remove-MSSAppShortcuts -OldShortCuts $AllowedShortCuts
+            gsudo Update-Module -Force
         } catch {
-            Write-Warning "Failed to clean up desktop shortcuts: $_"
+            Write-Error "Failed to update PowerShell modules: $_"
         }
+    }
 
-        # Windows Updates
-        if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
-            Write-Verbose "Updating Windows..."
-            try {
-                gsudo Get-WindowsUpdate -Download -Install -AcceptAll -ErrorAction Stop
+    # Applications via winget
+    if ($UpdateApps -and $PSCmdlet.ShouldProcess("Applications", "Update")) {
+        Write-Verbose "Updating applications via winget..."
+        try {
+            $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
+                                Select-Object -ExpandProperty Name
+            Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
+            gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
+                --disable-interactivity --include-unknown --include-pinned --silent --force
+        } catch {
+            Write-Error "Failed to update applications via winget: $_"
+        } finally {
+            Remove-DesktopShortcuts -OldShortCuts $AllowedShortCuts   
+        }
+    }
+         
 
-                if ((gsudo Get-WURebootStatus).RebootRequired) {
-                    Write-Warning "A system reboot is required to complete the updates."
-                }
-            } catch {
-                Write-Error "Failed to update Windows: $_"
+    # Windows Updates
+    if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
+        Write-Verbose "Updating Windows..."
+        try {
+            Test-Dependency PSWindowsUpdate -Module
+            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -ErrorAction Stop
+
+            if ((gsudo Get-WURebootStatus).RebootRequired) {
+                Write-Warning "A system reboot is required to complete the updates."
             }
+        } catch {
+            Write-Error "Failed to update Windows: $_"
         }
     }
-    catch {
-        Write-Error "Update-System failed: $_"
+
+    if ($UpdatePip -and $PSCmdlet.ShouldProcess("Python packages", "Update")) {
+        Write-Verbose "Updating Python packages via pip..."
+        try {
+            Test-Dependency pip -App -Source Python.Python.3.13  
+
+            python.exe -m pip install --upgrade pip
+
+            $packages = & pip list --outdated --format=freeze | ForEach-Object {
+                $_.Split('==')[0]
+            }
+
+            foreach ($package in $packages) {
+                Write-Verbose "Updating package: $package"
+                & pip install --upgrade $package
+            }
+        } catch {
+            Write-Error "Failed to update Python packages via pip: $_"
+        }
     }
-    finally {
-        Write-Verbose "System update process finished."
-    }
+    Write-Verbose "System update process finished."
 }

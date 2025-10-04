@@ -1,0 +1,49 @@
+Init:
+  "gerardog.gsudo"
+
+Core:
+  "M2Team.NanaZip",
+  "Git.Git",
+  "9WZDNCRD29V9",
+  "Microsoft.VisualStudioCode",
+  "Microsoft.PowerToys",
+  "KeePassXCTeam.KeePassXC",
+  "restic.restic",
+  "Obsidian.Obsidian",
+  "Google.Chrome",
+  "Mathpix.MathpixSnippingTool",
+  "Microsoft.WindowsTerminal",
+  "Spotify.Spotify",
+  "Google.GoogleDrive",
+  "JanDeDobbeleer.OhMyPosh",
+  "JAMSoftware.TreeSize.Free"
+
+Messengers:
+  "Discord.Discord",
+  "OpenWhisperSystems.Signal",
+  "Mozilla.Thunderbird",
+  "9NKSQGP7F2NH"
+
+ProgrammingTools:
+  "Inkscape.Inkscape",
+  "MiKTeX.MiKTeX",
+  "StrawberryPerl.StrawberryPerl",
+  "Python.Python.3.13",
+  "Rufus.Rufus",
+  "TheMathWorksInc.MATLABRuntime",
+  "AnalogDevices.LTspice",
+  "MSYS2.MSYS2"
+
+Games:
+  "Playnite.Playnite",
+  "Blizzard.BattleNet",
+  "Valve.Steam",
+  "Ubisoft.Connect",
+  "Orbmu2k.NvidiaProfileInspector",
+  "ElectronicArts.EADesktop",
+  "Logitech.GHUB",
+  "NVIDIA.GeForceExperience",
+  "RiotGames.Valorant",
+  "EpicGames.EpicGamesLauncher",
+  "9PMQSL444HLF",
+  "GOG.Galaxy"

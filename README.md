@@ -21,6 +21,7 @@ Features:
   - update windows
   - (update graphics drivers)
   - update powershell modules
+- automatically removes default app shortcuts after install or update.
 
 
 ## Best Practices
