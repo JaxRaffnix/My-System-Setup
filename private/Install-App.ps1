@@ -25,7 +25,8 @@ function Install-App {
         "No newer package versions are available from the configured sources",
         "The specified application is already installed",
         "is already installed",
-        "Installer failed with exit code: 29"
+        "Installer failed with exit code: 29",
+        "In den konfigurierten Quellen sind keine neueren Paketversionen verfügbar."
     )
 
     try {
@@ -41,25 +42,25 @@ function Install-App {
 
             # Execute winget installation
             $Result = winget install -e --id $AppId --silent --accept-source-agreements `
-                        --accept-package-agreements --disable-interactivity --force 2>&1
+                        --accept-package-agreements --disable-interactivity 2>&1
 
             # Check output for already installed messages
             if ($alreadyInstalledMessages | Where-Object { $Result -match $_ }) {
                 Write-Warning "The application '$AppId' is already installed."
             }
-            elseif ($Result -match "Successfully installed") {
+            elseif ($Result -match "Successfully installed" "Erfolgreich installiert") {
                 Write-Verbose "Successfully installed '$AppId'."
             }
             else {
-                Write-Error "Failed to install '$AppId'. Output: $Result"
+                Throw "Failed to install '$AppId'. Output: $Result"
             }
         }
     }
     catch {
-        Write-Error "An unexpected error occurred while installing '$AppId'. Error: $_"
+        Throw "An unexpected error occurred while installing '$AppId'. Error: $_"
     }
     finally {
         # Clean up desktop shortcuts, errors handled inside the function
-        Remove-DesktopShortcuts -OldShortCuts $AllowedShortCuts
+        Remove-DesktopShortcuts -AllowedShortCuts $AllowedShortCuts
     }
 }

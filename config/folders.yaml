@@ -1,0 +1,11 @@
+folders:
+  - Name: Workspace
+    Path: "$env:USERPROFILE"
+    enable_shortcut
+    enable_quick_acces
+  - Name: Temp
+    Path: "$env:USERPROFILE"
+  - Name: Coding
+    Path: "$env:USERPROFILE"
+    enable_shortcut
+    enable_quick_acces

@@ -53,7 +53,7 @@ function Remove-DesktopShortcuts {
                             Write-Host "Removed shortcut: $($ShortCut.Name)" -ForegroundColor Green
                         }
                     } catch {
-                        Write-Error "Failed to remove shortcut '$($ShortCut.Name)': $_"
+                        throw "Failed to remove shortcut '$($ShortCut.Name)': $_"
                     }
                 }
             } else {

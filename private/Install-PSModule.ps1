@@ -27,8 +27,8 @@ function Install-PSModule {
         try {
             Write-Verbose "Installing PowerShell module: $ModuleName"
 
-            Install-Module -Name $ModuleName -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
-            Import-Module -Name $ModuleName -Force -Scope Local -ErrorAction Stop
+            Install-Module -Name $ModuleName -Scope CurrentUser -AllowClobber -ErrorAction Stop
+            Import-Module -Name $ModuleName -Scope Local -ErrorAction Stop
 
             Write-Verbose "Module '$ModuleName' installed and imported successfully."
         }

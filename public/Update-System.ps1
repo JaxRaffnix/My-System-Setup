@@ -56,7 +56,8 @@ function Update-System {
     if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
         Write-Verbose "Updating PowerShell modules..."
         try {
-            gsudo Update-Module -Force -Verbose
+            gsudo Update-Module -Force
+            # todo: this doesnt show any console output. but using -verbose is too much
         } catch {
             Write-Error "Failed to update PowerShell modules: $_"
         }
@@ -83,8 +84,8 @@ function Update-System {
     if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
         Write-Verbose "Updating Windows..."
         try {
-            Test-Dependency PSWindowsUpdate -Module -Source PSWindowsUpdate
-            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -ErrorAction Stop
+            Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
+            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop
 
             if ((gsudo Get-WURebootStatus).RebootRequired) {
                 Write-Warning "A system reboot is required to complete the updates."
@@ -101,9 +102,8 @@ function Update-System {
 
             python.exe -m pip install --upgrade pip
 
-            $packages = & pip list --outdated --format=freeze | ForEach-Object {
-                $_.Split('==')[0]
-            }
+            $packagesJson = & pip list --outdated --format=json | ConvertFrom-Json
+            $packages = $packagesJson | ForEach-Object { $_.name }
 
             foreach ($package in $packages) {
                 Write-Verbose "Updating package: $package"

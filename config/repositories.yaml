@@ -1,0 +1,5 @@
+repositories:
+  - Name: "Hilfestellung"
+    Url: "https://github.com/JaxRaffnix/Hilfestellung.git"
+  - Name: "Powershell-ModuleTools"
+    Url: "https://github.com/JaxRaffnix/Powershell-ModuleTools.git"

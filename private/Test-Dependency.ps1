@@ -55,7 +55,7 @@ function Test-Dependency {
         Write-Warning "$Command is not installed or not available."
 
         if ($DisableInstall) {
-            throw "Automatic install for $Command is disabled. Install it manually."
+            throw "Automatic install for $Command is disabled. Please run a manual install for $Source."
         }
 
         if ($App) {
