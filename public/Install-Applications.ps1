@@ -12,6 +12,9 @@ function Install-Applications {
         [string]$ConfigPath = "$PSScriptRoot/../config/applications.yaml"
     )
 
+    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
+    gsudo cache on | Out-Null
+
     # Load the YAML file
     try {
         Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"

@@ -44,7 +44,7 @@ ProgrammingTools:
     - "StrawberryPerl.StrawberryPerl"
     - "Python.Python.3.13"
     - "Rufus.Rufus"
-    - "TheMathWorksInc.MATLABRuntime"
+    - "MathWorks.MATLABRuntime"
     - "AnalogDevices.LTspice"
     - "MSYS2.MSYS2"
 

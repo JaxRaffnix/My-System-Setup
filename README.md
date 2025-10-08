@@ -21,8 +21,8 @@ Features:
   - update windows
   - (update graphics drivers)
   - update powershell modules
+  - update pip and packages
 - automatically removes default app shortcuts after install or update.
-
 
 ## Best Practices
 

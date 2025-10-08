@@ -56,8 +56,7 @@ function Update-System {
     if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
         Write-Verbose "Updating PowerShell modules..."
         try {
-            gsudo Update-Module -Force
-            # todo: this doesnt show any console output. but using -verbose is too much
+            gsudo Update-Module 
         } catch {
             Write-Error "Failed to update PowerShell modules: $_"
         }
@@ -71,7 +70,7 @@ function Update-System {
                                 Select-Object -ExpandProperty Name
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
-                --disable-interactivity --include-unknown --include-pinned --silent --force
+                --disable-interactivity --include-unknown --include-pinned --silent 
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
@@ -85,7 +84,7 @@ function Update-System {
         Write-Verbose "Updating Windows..."
         try {
             Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
-            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop
+            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop 2>&1 | Out-Host
 
             if ((gsudo Get-WURebootStatus).RebootRequired) {
                 Write-Warning "A system reboot is required to complete the updates."

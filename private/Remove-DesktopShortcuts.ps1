@@ -50,7 +50,7 @@ function Remove-DesktopShortcuts {
                             Write-Host "[DryRun] Would remove: $($ShortCut.Name)" -ForegroundColor Yellow
                         } else {
                             gsudo Remove-Item $ShortCut.FullName -Force -ErrorAction Stop
-                            Write-Host "Removed shortcut: $($ShortCut.Name)" -ForegroundColor Green
+                            Write-Host "Removed shortcut: $($ShortCut.Name)"
                         }
                     } catch {
                         throw "Failed to remove shortcut '$($ShortCut.Name)': $_"
