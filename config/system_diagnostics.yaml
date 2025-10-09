@@ -1,0 +1,72 @@
+SystemHealth:
+  - Title: Windows Defender Summary
+    Command: |
+      Get-MpComputerStatus |
+      Select-Object AMServiceEnabled, RealTimeProtectionEnabled, AntivirusEnabled, NISProtectionEnabled |
+      Format-List | Out-String
+
+  - Title: System Reliability Issues (Last 7 Days)
+    Command: |
+      Get-WinEvent -FilterHashtable @{LogName="System"; StartTime=(Get-Date).AddDays(-7)} |
+      Where-Object {$_.LevelDisplayName -eq "Error"} |
+      Format-Table TimeCreated, Message | Out-String
+
+  - Title: Startup Programs
+    Command: |
+      Get-CimInstance Win32_StartupCommand |
+      Select-Object Name, Command, Location |
+      Format-Table | Out-String
+
+  - Title: DISM ScanHealth
+    Command: gsudo DISM /Online /Cleanup-Image /RestoreHealth
+
+  - Title: System File Checker (SFC)
+    Command: gsudo sfc /scannow
+
+  - Title: CHKDSK with Fix
+    Command: 'Write-Output Y | gsudo chkdsk C: /f /r /x'
+
+  - Title: Pending Windows Updates
+    Command: gsudo Get-WindowsUpdate -AcceptAll -IgnoreReboot | Format-Table | Out-String
+
+StorageHealth:
+  - Title: Physical Disk Health
+    Command: Get-PhysicalDisk | Select-Object DeviceID, MediaType, HealthStatus, OperationalStatus | Format-Table | Out-String
+
+  - Title: Disk Usage Analysis
+    Command: |
+      Get-PSDrive -PSProvider FileSystem |
+      Select-Object Name, Used, Free, @{Name="Used(%)"; Expression={[math]::Round(($_.Used / ($_.Used + $_.Free)) * 100, 2)}} |
+      Format-Table | Out-String
+
+  - Title: Check for Large Files (>500MB) on C:
+    Command: |
+      Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue |
+      Where-Object { -not $_.PSIsContainer -and $_.Length -gt 500MB } |
+      Select-Object FullName, Length |
+      Sort-Object Length -Descending |
+      Format-Table | Out-String
+
+Cleanup:
+  - Title: Broken Desktop Shortcuts
+    Command: |
+      Get-ChildItem -Path "$env:USERPROFILE\Desktop" -Filter *.lnk -Recurse |
+      ForEach-Object {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($_.FullName)
+        if (-not (Test-Path $shortcut.TargetPath)) {
+          Remove-Item -Path $_.FullName -Force
+          Write-Host "Removed broken shortcut: $($_.FullName)"
+        }
+      }
+
+  - Title: Disk Cleanup
+    Command: cleanmgr /sagerun:1 /autoclean
+
+  - Title: Empty Recycle Bin
+    Command: Clear-RecycleBin -Force -ErrorAction SilentlyContinue
+
+  - Title: Clear Temp and Cache Files
+    Command: |
+        Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+        Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\INetCache" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force

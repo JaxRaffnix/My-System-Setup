@@ -4,6 +4,7 @@ Init:
   modules:
     - "NuGet"
     - "PowerShellGet"
+    - "powershell-yaml"
     # - "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted"
 
 Core:
@@ -29,6 +30,7 @@ Core:
     - "Google.GoogleDrive"
     - "JanDeDobbeleer.OhMyPosh"
     - "JAMSoftware.TreeSize.Free"
+    - "Microsoft.OfficeDeploymentTool"
 
 Messengers:
   winget:
