@@ -1,4 +1,4 @@
-function Clone-Repositories {
+function Get-Repositories {
 
     [CmdletBinding(SupportsShouldProcess=$true)]
     param (
