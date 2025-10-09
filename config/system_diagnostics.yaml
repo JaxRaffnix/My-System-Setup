@@ -1,4 +1,4 @@
-SystemHealth:
+System:
   - Title: Windows Defender Summary
     Command: |
       Get-MpComputerStatus |
@@ -14,8 +14,9 @@ SystemHealth:
   - Title: Startup Programs
     Command: |
       Get-CimInstance Win32_StartupCommand |
-      Select-Object Name, Command, Location |
-      Format-Table | Out-String
+      Where-Object { $_.Command -and $_.Command.Trim() -ne "" } |
+      Select-Object Name, Command, Location, User |
+      Format-Table -AutoSize | Out-String
 
   - Title: DISM ScanHealth
     Command: gsudo DISM /Online /Cleanup-Image /RestoreHealth
@@ -29,9 +30,12 @@ SystemHealth:
   - Title: Pending Windows Updates
     Command: gsudo Get-WindowsUpdate -AcceptAll -IgnoreReboot | Format-Table | Out-String
 
-StorageHealth:
+Storage:
   - Title: Physical Disk Health
-    Command: Get-PhysicalDisk | Select-Object DeviceID, MediaType, HealthStatus, OperationalStatus | Format-Table | Out-String
+    Command: |
+      Get-PhysicalDisk |
+      Select-Object DeviceID, MediaType, HealthStatus, OperationalStatus |
+      Format-Table | Out-String
 
   - Title: Disk Usage Analysis
     Command: |
@@ -39,7 +43,7 @@ StorageHealth:
       Select-Object Name, Used, Free, @{Name="Used(%)"; Expression={[math]::Round(($_.Used / ($_.Used + $_.Free)) * 100, 2)}} |
       Format-Table | Out-String
 
-  - Title: Check for Large Files (>500MB) on C:
+  - Title: Check for Large Files (>500MB) on C
     Command: |
       Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue |
       Where-Object { -not $_.PSIsContainer -and $_.Length -gt 500MB } |
@@ -68,5 +72,6 @@ Cleanup:
 
   - Title: Clear Temp and Cache Files
     Command: |
-        Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-        Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\INetCache" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+      Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+      Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\INetCache" -Recurse -ErrorAction SilentlyContinue |
+      Remove-Item -Force

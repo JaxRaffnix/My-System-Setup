@@ -1,4 +1,4 @@
-function Invoke-SystemDiagnostics {
+function Invoke-Diagnostics {
     <#
     .SYNOPSIS
     Runs a suite of system and storage diagnostics.
@@ -19,7 +19,7 @@ function Invoke-SystemDiagnostics {
     Runs all categories (System, Storage, and Cleanup).
 
     .EXAMPLE
-    Invoke-SystemDiagnostics -System -Storage
+    Invoke-Diagnostics -System -Storage
     #>
 
     [CmdletBinding()]
@@ -53,7 +53,8 @@ function Invoke-SystemDiagnostics {
 
     try {
         Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"    
-        $checks = (Get-Content $ConfigPath -Raw | ConvertFrom-Yaml)
+        $rawYaml = Get-Content -Path $ConfigPath -Raw -ErrorAction Stop
+        $checks = $rawYaml | ConvertFrom-Yaml
     }
     catch {
         throw "Failed to load diagnostics YAML: $_"
@@ -65,6 +66,7 @@ function Invoke-SystemDiagnostics {
     if ($Cleanup) {$selected += 'Cleanup'}
 
     Write-Verbose "Running diagnostic categories: $($selected -join ', ')" 
+    gsudo cache on | Out-Null
 
     foreach ($category in $selected) {
         foreach ($item in $checks.$category) {
