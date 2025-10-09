@@ -52,11 +52,15 @@ function Update-System {
     # Enable gsudo cache (avoids repeated elevation prompts)
     gsudo cache on | Out-Null
 
+    # Initialize array to track updated categories
+    $updatedCategories = @()
+
     # PowerShell Modules
     if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
         Write-Verbose "Updating PowerShell modules..."
         try {
             gsudo Update-Module 
+            $updatedCategories += "PowerShell modules"
         } catch {
             Write-Error "Failed to update PowerShell modules: $_"
         }
@@ -71,13 +75,13 @@ function Update-System {
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent 
+            $updatedCategories += "Winget applications"
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
             Remove-DesktopShortcuts -AllowedShortCuts $AllowedShortCuts   
         }
     }
-         
 
     # Windows Updates
     if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
@@ -89,16 +93,17 @@ function Update-System {
             if ((gsudo Get-WURebootStatus).RebootRequired) {
                 Write-Warning "A system reboot is required to complete the updates."
             }
+            $updatedCategories += "Windows"
         } catch {
             Write-Error "Failed to update Windows: $_"
         }
     }
 
+    # Python packages
     if ($UpdatePip -and $PSCmdlet.ShouldProcess("Python packages", "Update")) {
         Write-Verbose "Updating Python packages via pip..."
         try {
             Test-Dependency pip -App -Source Python.Python.3.13  
-
             python.exe -m pip install --upgrade pip
 
             $packagesJson = & pip list --outdated --format=json | ConvertFrom-Json
@@ -108,9 +113,18 @@ function Update-System {
                 Write-Verbose "Updating package: $package"
                 & pip install --upgrade $package
             }
+            $updatedCategories += "Python packages"
         } catch {
             Write-Error "Failed to update Python packages via pip: $_"
         }
     }
-    Write-Verbose "System update process finished."
+
+    # Final message
+    if ($updatedCategories.Count -gt 0) {
+        $categoriesString = $updatedCategories -join ", "
+        Write-Host "Successfully updated system: $categoriesString." -ForegroundColor Green
+    } else {
+        Write-Warning "No update categories were executed."
+    }
+
 }

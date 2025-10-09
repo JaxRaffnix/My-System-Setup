@@ -39,45 +39,86 @@ the init category in applications is currently unused.
 ## Best Practices
 
 ```
-Best Practices Demonstrated
+function Verb-Noun {
+    <#
+    .SYNOPSIS
+        Short one-line summary.
 
-CmdletBinding & parameters
+    .DESCRIPTION
+        Detailed description of what the function does, what it installs/configures, etc.
 
-Enables -Verbose, -Debug, -WhatIf automatically.
+    .PARAMETER 
+        Mandatory target location.
 
-Use [Parameter()] attributes to make parameters mandatory or optional.
+    .PARAMETER ConfigPath
+        Optional YAML/JSON configuration file path.
 
-Clear Verb-Noun name
+    .EXAMPLE
+        Verb-Noun -ConfigPath "./config/myconfig.yaml" -Verbose
 
-Install-App follows PowerShell conventions.
+    .NOTES
+        Author: Jan Hoegen
+        Part of: My-System-Setup
+    #>
 
-Inside your module, prefix with MSS if you want: Install-MSSApp.
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$TargetPath,
 
-Help comments (<# #>)
+        [Parameter(Mandatory = $false)]
+        [string]$ConfigPath = "$PSScriptRoot/../config/default.yaml"
+    )
 
-.SYNOPSIS, .DESCRIPTION, .PARAMETER, .EXAMPLE → essential for discoverability and Get-Help.
+    # ─────────────────────────────────────────────────────────────
+    # 1. Dependency checks
+    # ─────────────────────────────────────────────────────────────
+    Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"
+   
+    # ─────────────────────────────────────────────────────────────
+    # 2. Load configuration
+    # ─────────────────────────────────────────────────────────────
+    if (-not (Test-Path $ConfigPath)) {
+        throw "Configuration file not found at '$ConfigPath'."
+    }
+    try {
+        $config = (Get-Content -Path $ConfigPath -Raw) | ConvertFrom-Yaml
+    } catch {
+        throw "Failed to parse configuration: $_"
+    }
 
-Error handling with try/catch/finally
+    # ─────────────────────────────────────────────────────────────
+    # 3. Pre-checks and setup
+    # ─────────────────────────────────────────────────────────────
+    if (-not (Test-Path $TargetPath)) {
+        New-Item -Path $TargetPath -ItemType Directory -Force | Out-Null
+        Write-Verbose "Created target directory '$TargetPath'."
+    }
 
-Catches runtime errors and logs them cleanly.
+    # ─────────────────────────────────────────────────────────────
+    # 4. Main logic with ShouldProcess
+    # ─────────────────────────────────────────────────────────────
+    foreach ($item in $config.Items) {
+        $action = $item.Action
+        try {
 
-finally ensures cleanup or logging happens regardless of success.
+            # Do something like installing, copying, or configuring...
+            # Install-App -AppId $item.AppId
+            # or
+            # git clone $item.Url $TargetPath
 
-Verbose output
+            Write-Verbose "Successfully processed '$action'."
+        } catch {
+            Write-Error "Failed to process '$action': $_"
+        }
+    }
 
-Write-Verbose allows users to see details when needed, without cluttering default output.
+    # ─────────────────────────────────────────────────────────────
+    # 5. Cleanup and summary
+    # ─────────────────────────────────────────────────────────────
+    Write-Host "Successfully ... at '$TargetPath'." -ForegroundColor Green
+}
 
-Dry-run / WhatIf support
-
-Optional simulation mode prevents accidental changes.
-
-Self-contained logic
-
-Function can read configuration if needed, but avoids hardcoding paths beyond placeholders.
-
-Return meaningful results
-
-Could return success/failure object, path installed, or version info.
 ```
 
 

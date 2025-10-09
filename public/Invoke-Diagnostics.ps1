@@ -83,6 +83,5 @@ function Invoke-Diagnostics {
             }
         }
     }
-
-    Write-Verbose "Diagnostics completed." 
+    Write-Host "Successfully run diagnostics and saved report to '$ReportFile'." -ForegroundColor Green
 }

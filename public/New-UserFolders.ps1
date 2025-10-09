@@ -12,6 +12,8 @@ function New-UserFolders {
 
     [CmdletBinding()]
     param (
+        [string]$TargetPath = $env:USERPROFILE,
+
         [ValidateNotNullOrEmpty()]
         [string]$ConfigPath = "$PSScriptRoot/../config/folders.yaml"
     )
@@ -30,7 +32,7 @@ function New-UserFolders {
 
     foreach ($folder in $yamlContent.folders) {
         # Expand environment variables in path
-        $basePath = [Environment]::ExpandEnvironmentVariables($folder.Path)
+        $basePath = $TargetPath
         $fullPath = Join-Path -Path $basePath -ChildPath $folder.Name
 
         try {
@@ -63,6 +65,5 @@ function New-UserFolders {
             }
         }
     }
-
-    Write-verbose "Finished processing folders from YAML." 
+    Write-Host "Successfully created user folders at '$TargetPath'." -ForegroundColor Green
 }

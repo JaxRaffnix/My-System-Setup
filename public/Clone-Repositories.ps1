@@ -47,4 +47,5 @@ function Get-Repositories {
             }
         }
     }
+    Write-Host "Successfully cloned repositories to '$TargetPath'." -ForegroundColor Green
 }

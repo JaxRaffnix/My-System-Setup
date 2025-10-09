@@ -80,7 +80,6 @@ function Install-Applications {
                 }
             }
         }
-
-        Write-Verbose "Finished category '$cat'."
     }
+    Write-Host "Successfully installed categories '$categoriesToInstall'." -ForegroundColor Green
 }
