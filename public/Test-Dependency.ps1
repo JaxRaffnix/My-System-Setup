@@ -49,7 +49,7 @@ function Test-Dependency {
     try {
         # Check if the command is already available
         Get-Command -Name $Command -ErrorAction Stop | Out-Null
-        Write-Verbose "$Command is already available."
+        Write-Verbose "Successully validated '$Command'."
     }
     catch {
         Write-Warning "$Command is not installed or not available."
