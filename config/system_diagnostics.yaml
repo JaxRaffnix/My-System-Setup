@@ -1,5 +1,5 @@
 System:
-  - Title: Windows Defender Summary
+  - Title: Windows Defender Status
     Command: |
       Get-MpComputerStatus |
       Select-Object AMServiceEnabled, RealTimeProtectionEnabled, AntivirusEnabled, NISProtectionEnabled |
@@ -9,7 +9,9 @@ System:
     Command: |
       Get-WinEvent -FilterHashtable @{LogName="System"; StartTime=(Get-Date).AddDays(-7)} |
       Where-Object {$_.LevelDisplayName -eq "Error"} |
-      Format-Table TimeCreated, Message | Out-String
+      Select-Object TimeCreated, ProviderName, Id, Message |
+      Sort-Object TimeCreated -Descending |
+      Format-Table -AutoSize | Out-String
 
   - Title: Startup Programs
     Command: |
@@ -18,14 +20,21 @@ System:
       Select-Object Name, Command, Location, User |
       Format-Table -AutoSize | Out-String
 
-  - Title: DISM ScanHealth
+  - Title: DISM Health Check
     Command: gsudo DISM /Online /Cleanup-Image /RestoreHealth
 
   - Title: System File Checker (SFC)
     Command: gsudo sfc /scannow
 
-  - Title: CHKDSK with Fix
-    Command: 'Write-Output Y | gsudo chkdsk C: /f /r /x'
+  - Title: Check Disk (CHKDSK)
+    Command: gsudo chkdsk C /spotfix
+
+  - Title: Installed Updates
+    Command: |
+      Get-HotFix |
+      Select-Object InstalledOn, Description, HotFixID |
+      Sort-Object InstalledOn -Descending |
+      Format-Table -AutoSize | Out-String
 
   - Title: Pending Windows Updates
     Command: gsudo Get-WindowsUpdate -AcceptAll -IgnoreReboot | Format-Table | Out-String
@@ -34,22 +43,22 @@ Storage:
   - Title: Physical Disk Health
     Command: |
       Get-PhysicalDisk |
-      Select-Object DeviceID, MediaType, HealthStatus, OperationalStatus |
-      Format-Table | Out-String
+      Select-Object DeviceID, FriendlyName, MediaType, HealthStatus, OperationalStatus |
+      Format-Table -AutoSize | Out-String
 
-  - Title: Disk Usage Analysis
+  - Title: Disk Usage Summary
     Command: |
       Get-PSDrive -PSProvider FileSystem |
       Select-Object Name, Used, Free, @{Name="Used(%)"; Expression={[math]::Round(($_.Used / ($_.Used + $_.Free)) * 100, 2)}} |
-      Format-Table | Out-String
+      Format-Table -AutoSize | Out-String
 
-  - Title: Check for Large Files (>500MB) on C
+  - Title: Large Files (>500MB)
     Command: |
       Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue |
       Where-Object { -not $_.PSIsContainer -and $_.Length -gt 500MB } |
-      Select-Object FullName, Length |
+      Select-Object FullName, @{Name="Size(GB)"; Expression={[math]::Round($_.Length/1GB, 2)}} |
       Sort-Object Length -Descending |
-      Format-Table | Out-String
+      Format-Table -AutoSize | Out-String
 
 Cleanup:
   - Title: Broken Desktop Shortcuts
@@ -59,7 +68,7 @@ Cleanup:
         $shell = New-Object -ComObject WScript.Shell
         $shortcut = $shell.CreateShortcut($_.FullName)
         if (-not (Test-Path $shortcut.TargetPath)) {
-          Remove-Item -Path $_.FullName -Force
+          Remove-Item $_.FullName -Force
           Write-Host "Removed broken shortcut: $($_.FullName)"
         }
       }
@@ -70,8 +79,19 @@ Cleanup:
   - Title: Empty Recycle Bin
     Command: Clear-RecycleBin -Force -ErrorAction SilentlyContinue
 
-  - Title: Clear Temp and Cache Files
+  - Title: Clear Temp and Cache
     Command: |
       Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-      Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\INetCache" -Recurse -ErrorAction SilentlyContinue |
-      Remove-Item -Force
+      Remove-Item "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+Performance:
+  - Title: Memory Usage
+    Command: |
+      Get-CimInstance Win32_OperatingSystem |
+      Select-Object @{Name="TotalMB"; Expression={[math]::Round($_.TotalVisibleMemorySize/1024, 2)}},
+                    @{Name="FreeMB"; Expression={[math]::Round($_.FreePhysicalMemory/1024, 2)}},
+                    @{Name="UsedMB"; Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1024, 2)}} |
+      Format-List | Out-String
+
+  - Title: CPU Usage Snapshot
+    Command: Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 1 | Select-Object -ExpandProperty CounterSamples | Select-Object InstanceName, CookedValue | Format-Table | Out-String

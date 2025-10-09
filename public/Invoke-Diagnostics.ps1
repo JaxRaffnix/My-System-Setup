@@ -30,14 +30,15 @@ function Invoke-Diagnostics {
         [switch]$All,
 
         [Parameter(Mandatory=$false)]
-        [string]$ConfigPath = "$PSScriptRoot/../config/system_diagnostics.yaml"
+        [string]$ConfigPath = "$PSScriptRoot/../config/system_diagnostics.yaml",
+        [string]$ReportFile = "$env:USERPROFILE\Desktop\SystemDiagnostics_$(Get-Date -Format 'yyyyMMdd_HHmmss').txt"
     )
 
     # Expand group switches
     if ($All) {
         $System = $true
         $Storage = $true
-        $Cleanup = true
+        $Cleanup = $true
     }
 
     if (-not ($System -or $Storage -or $Cleanup)) {
@@ -49,6 +50,7 @@ function Invoke-Diagnostics {
 
     # Prerequisite checks
     Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
+    gsudo cache on | Out-Null
     Test-Dependency "Get-WindowsUpdate" -Module -Source "PSWindowsUpdate"
 
     try {
@@ -66,14 +68,17 @@ function Invoke-Diagnostics {
     if ($Cleanup) {$selected += 'Cleanup'}
 
     Write-Verbose "Running diagnostic categories: $($selected -join ', ')" 
-    gsudo cache on | Out-Null
-
+    
     foreach ($category in $selected) {
+        Add-Content -Path $ReportFile -Value "`n===== $category =====`n"
         foreach ($item in $checks.$category) {
+            Add-Content -Path $ReportFile -Value "`n--- $($item.Title) ---`n"
             Write-Host "`n=== $($item.Title) ===" -ForegroundColor Cyan
             try {
-                Invoke-Expression $item.Command
+                Invoke-Expression $item.Command 2>&1 | Tee-Object -Variable result
+                Add-Content -Path $ReportFile -Value $result
             } catch {
+                Add-Content -Path $ReportFile -Value "[$($item.Title)] failed: $($_.Exception.Message)"
                 Write-Error "[$($item.Title)] failed: $($_.Exception.Message)"
             }
         }

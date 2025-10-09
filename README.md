@@ -24,6 +24,10 @@ Features:
   - update pip and packages
 - automatically removes default app shortcuts after install or update.
 
+## Important
+
+the init category in applications is currently unused.
+
 ## Best Practices
 
 ```
