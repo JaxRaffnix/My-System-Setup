@@ -1,18 +1,9 @@
-Init:
-  winget:
-    - "gerardog.gsudo"
-  modules:
-    - "NuGet"
-    - "PowerShellGet"
-    - "powershell-yaml"
-    # - "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted"
-
 Core:
   modules:
     - "PSScriptTools"
     - "Terminal-Icons"
     - "PSReadLine"
-    - "PSWindowsUpdate"
+    - 
     - "PSWritePDF"
   winget:
     - "M2Team.NanaZip"

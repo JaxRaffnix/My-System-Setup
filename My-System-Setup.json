@@ -5,5 +5,6 @@
   "ProjectUri": "https://github.com/JaxRaffnix/My-System-Setup",
   "FunctionsToExport": [""],
   "PowerShellVersion": "5.1",
-  "IgnoreFiles": [".git", ".gitignore", ".vscode", "My-System-Setup.json", "README.md", "LICENSE"]
+  "IgnoreFiles": [".git", ".gitignore", ".vscode", "My-System-Setup.json", "README.md", "LICENSE"],
+  "RequiredModules": ["PSWindowsUpdate", "powershell-yaml"]
 }

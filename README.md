@@ -28,6 +28,14 @@ Features:
 
 the init category in applications is currently unused.
 
+## Unsure
+
+```
+- "NuGet"
+- "PowerShellGet"
+- "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted"
+```
+
 ## Best Practices
 
 ```
