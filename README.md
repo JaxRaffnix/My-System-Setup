@@ -73,14 +73,8 @@ function Verb-Noun {
         [string]$ConfigPath = "$PSScriptRoot/../config/default.yaml"
     )
 
-    # ─────────────────────────────────────────────────────────────
-    # 1. Dependency checks
-    # ─────────────────────────────────────────────────────────────
     Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"
    
-    # ─────────────────────────────────────────────────────────────
-    # 2. Load configuration
-    # ─────────────────────────────────────────────────────────────
     if (-not (Test-Path $ConfigPath)) {
         throw "Configuration file not found at '$ConfigPath'."
     }
@@ -90,17 +84,11 @@ function Verb-Noun {
         throw "Failed to parse configuration: $_"
     }
 
-    # ─────────────────────────────────────────────────────────────
-    # 3. Pre-checks and setup
-    # ─────────────────────────────────────────────────────────────
     if (-not (Test-Path $TargetPath)) {
         New-Item -Path $TargetPath -ItemType Directory -Force | Out-Null
         Write-Verbose "Created target directory '$TargetPath'."
     }
 
-    # ─────────────────────────────────────────────────────────────
-    # 4. Main logic with ShouldProcess
-    # ─────────────────────────────────────────────────────────────
     foreach ($item in $config.Items) {
         $action = $item.Action
         try {
@@ -116,9 +104,6 @@ function Verb-Noun {
         }
     }
 
-    # ─────────────────────────────────────────────────────────────
-    # 5. Cleanup and summary
-    # ─────────────────────────────────────────────────────────────
     Write-Host "Successfully ... at '$TargetPath'." -ForegroundColor Green
 }
 

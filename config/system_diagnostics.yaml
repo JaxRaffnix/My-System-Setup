@@ -27,7 +27,7 @@ System:
     Command: gsudo sfc /scannow
 
   - Title: Check Disk (CHKDSK)
-    Command: gsudo chkdsk C /spotfix
+    Command: "gsudo chkdsk C: /spotfix"
 
   - Title: Installed Updates
     Command: |
