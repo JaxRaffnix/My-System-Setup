@@ -28,6 +28,9 @@ Features:
 
 the init category in applications is currently unused.
 
+TODO: for system diagnostics: also check for broken shortcuts/symlinks on the whole file system. espically for the executable shortcut folder
+Example: `C:\Users\Jax\AppData\Roaming\Microsoft\Windows\Start Menu\Programs`
+
 ## Unsure
 
 ```
