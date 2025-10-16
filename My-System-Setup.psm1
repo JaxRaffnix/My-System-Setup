@@ -4,6 +4,7 @@ if (-not (Get-Command "gsudo" -ErrorAction SilentlyContinue)) {
 }
 
 if (-not (Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)) {
+    Write-Warning "Installing NuGet Package Provider ..."
     gsudo Install-PackageProvider -Name NuGet -Force
 }
 
