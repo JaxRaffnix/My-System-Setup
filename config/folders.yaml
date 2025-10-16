@@ -1,8 +1,7 @@
 folders:
   - Name: Workspace
     enable_shortcut: true
-    enable_quick_access: true
-  - Name: Temp
   - Name: Coding
     enable_shortcut: true
     enable_quick_access: true
+  - Name: Temp

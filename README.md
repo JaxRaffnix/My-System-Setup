@@ -24,20 +24,16 @@ Features:
   - update pip and packages
 - automatically removes default app shortcuts after install or update.
 
-## Important
-
-the init category in applications is currently unused.
-
-TODO: for system diagnostics: also check for broken shortcuts/symlinks on the whole file system. espically for the executable shortcut folder
-Example: `C:\Users\Jax\AppData\Roaming\Microsoft\Windows\Start Menu\Programs`
-
 ## Unsure
 
 ```
 - "NuGet"
 - "PowerShellGet"
 - "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted"
+- everything
 ```
+
+TODO: find a simple way to install c++ toolchains. current solution is msys2
 
 ## Best Practices
 
@@ -121,7 +117,6 @@ A PowerShell module designed to streamline the process of configuring Windows en
 ## Table of Contents
 
 - [My System Setup](#my-system-setup)
-  - [Important](#important)
   - [Unsure](#unsure)
   - [Best Practices](#best-practices)
   - [Old Readme](#old-readme)

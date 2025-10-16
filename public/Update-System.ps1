@@ -79,7 +79,11 @@ function Update-System {
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
-            Remove-DesktopShortcuts -AllowedShortCuts $AllowedShortCuts   
+            $DesktopPaths = @(
+                "$env:USERPROFILE\Desktop",
+                "$env:PUBLIC\Desktop"
+            )
+            Remove-UnwantedShortcuts -Paths $DesktopPaths -AllowedShortcuts $AllowedShortcuts
         }
     }
 

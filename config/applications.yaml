@@ -3,12 +3,12 @@ Core:
     - "PSScriptTools"
     - "Terminal-Icons"
     - "PSReadLine"
-    - 
+    - "PSWindowsUpdate"
     - "PSWritePDF"
   winget:
     - "M2Team.NanaZip"
     - "Git.Git"
-    - "9WZDNCRD29V9"
+    - "9WZDNCRD29V9"  # Microsoft 365 Copilo
     - "Microsoft.VisualStudioCode"
     - "Microsoft.PowerToys"
     - "KeePassXCTeam.KeePassXC"
@@ -22,13 +22,15 @@ Core:
     - "JanDeDobbeleer.OhMyPosh"
     - "JAMSoftware.TreeSize.Free"
     - "Microsoft.OfficeDeploymentTool"
+    - Microsoft.PowerShell
+    - Microsoft.VisualStudio.2022.BuildTools
 
 Messengers:
   winget:
     - "Discord.Discord"
     - "OpenWhisperSystems.Signal"
     - "Mozilla.Thunderbird"
-    - "9NKSQGP7F2NH"
+    - "9NKSQGP7F2NH"  # WhatsApp
 
 ProgrammingTools:
   winget:
@@ -40,6 +42,7 @@ ProgrammingTools:
     - "MathWorks.MATLABRuntime"
     - "AnalogDevices.LTspice"
     - "MSYS2.MSYS2"
+    - "GitHub.cli"
 
 Games:
   winget:
@@ -47,11 +50,11 @@ Games:
     - "Blizzard.BattleNet"
     - "Valve.Steam"
     - "Ubisoft.Connect"
-    - "Orbmu2k.NvidiaProfileInspector"
+    # - "Orbmu2k.NvidiaProfileInspector"
     - "ElectronicArts.EADesktop"
     - "Logitech.GHUB"
     - "NVIDIA.GeForceExperience"
     - "RiotGames.Valorant"
     - "EpicGames.EpicGamesLauncher"
-    - "9PMQSL444HLF"
+    - "9PMQSL444HLF"  # ducky
     - "GOG.Galaxy"

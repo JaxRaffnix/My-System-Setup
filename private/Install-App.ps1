@@ -58,6 +58,10 @@ function Install-App {
     }
     finally {
         # Clean up desktop shortcuts, errors handled inside the function
-        Remove-DesktopShortcuts -AllowedShortCuts $AllowedShortCuts
+        $DesktopPaths = @(
+            "$env:USERPROFILE\Desktop",
+            "$env:PUBLIC\Desktop"
+        )
+        Remove-UnwantedShortcuts -Paths $DesktopPaths -AllowedShortcuts $AllowedShortcuts
     }
 }

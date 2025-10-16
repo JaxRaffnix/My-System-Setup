@@ -61,17 +61,15 @@ Storage:
       Format-Table -AutoSize | Out-String
 
 Cleanup:
-  - Title: Broken Desktop Shortcuts
+  - Title: Remove Broken Shortcuts
     Command: |
-      Get-ChildItem -Path "$env:USERPROFILE\Desktop" -Filter *.lnk -Recurse |
-      ForEach-Object {
-        $shell = New-Object -ComObject WScript.Shell
-        $shortcut = $shell.CreateShortcut($_.FullName)
-        if (-not (Test-Path $shortcut.TargetPath)) {
-          Remove-Item $_.FullName -Force
-          Write-Host "Removed broken shortcut: $($_.FullName)"
-        }
-      }
+      $Paths = @(
+        "$env:USERPROFILE\Desktop",
+        "$env:PUBLIC\Desktop",
+        "$env:APPDATA\Microsoft\Windows\Start Menu",
+        "$env:ProgramData\Microsoft\Windows\Start Menu"
+      )
+      Remove-UnwantedShortcuts -Paths $Paths -RemoveBroken
 
   - Title: Disk Cleanup
     Command: cleanmgr /sagerun:1 /autoclean
