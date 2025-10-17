@@ -59,10 +59,12 @@ function Invoke-GitAmend {
         }
 
         if ($Push) {
+            git pull
             git push
         }
         Write-Host "Successfully amended latest commit." -ForegroundColor Green
-
+    } catch {
+        Throw "Failed to amend latest commit: $_"
     } finally {
         Pop-Location
     }
