@@ -42,7 +42,7 @@ function Invoke-GitAmend {
     Push-Location $Path
 
     try {
-        git fetch | Out-Null
+        git fetch --quiet | Out-Null
 
         $status = git status -uno
         if ($status -match "Your branch is behind" -or $status -match "have diverged") {
@@ -59,8 +59,7 @@ function Invoke-GitAmend {
         }
 
         if ($Push) {
-            git pull
-            git push
+            git push --force-with-lease
         }
         Write-Host "Successfully amended latest commit." -ForegroundColor Green
     } catch {
