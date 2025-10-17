@@ -79,5 +79,5 @@ function Remove-UnwantedShortcuts {
         }
     }
 
-    Write-Host "Finished processing all provided paths: $paths." -ForegroundColor Green
+    Write-Verbose "Finished removing unwanted shortcuts in paths: $paths."
 }
