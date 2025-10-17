@@ -23,6 +23,7 @@ Features:
   - update powershell modules
   - update pip and packages
 - automatically removes default app shortcuts after install or update.
+- provide a function to amend the latest git commit. Has the alias ga
 
 ## Unsure
 
