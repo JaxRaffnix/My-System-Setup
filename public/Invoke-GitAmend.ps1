@@ -1,39 +1,35 @@
 function Invoke-GitAmend {
     <#
     .SYNOPSIS
-    Amends the most recent Git commit, optionally pushing changes to the remote.
+    Amends the most recent Git commit and automatically syncs with remote if applicable.
 
     .DESCRIPTION
-    This function automates the process of amending the latest Git commit. 
-    It stages all modified files, amends the last commit (optionally with a new message),
-    and optionally pushes the amended commit to the remote repository.
-
-    It also checks if the local branch is behind or has diverged from the remote and 
-    performs a `git pull` if necessary before amending.
+    Stages all changes, amends the most recent commit (optionally with a new message),
+    and automatically pushes the amended commit to the remote repository if the branch
+    is tracking one. This avoids divergence and merge conflicts entirely.
 
     .PARAMETER Path
     The path to the Git repository. Defaults to the current directory.
 
     .PARAMETER Message
     The new commit message to use for the amended commit.
-    If omitted, the Git editor will open for you to modify the message.
+    If omitted, the previous message is reused.
 
-    .PARAMETER Push
-    If specified, pushes the amended commit to the remote repository.
-
-    .EXAMPLE
-    Invoke-GitAmend -Message "Fix typo in README"
-    # Stages all changes and amends the latest commit with a new message.
+    .PARAMETER NoPush
+    Suppresses automatic pushing (for local-only amend).
 
     .EXAMPLE
-    Invoke-GitAmend -Push
-    # Amends the latest commit interactively, then pushes to remote.
+    Invoke-GitAmend -Message "Fix typo in docs"
+    # Amends and automatically syncs with remote if tracking branch exists.
 
+    .EXAMPLE
+    Invoke-GitAmend -NoPush
+    # Amends locally without updating the remote.
     #>
     param (
         [string]$Path = ".",  # optional: path to the git repo
         [string]$Message,
-        [switch]$Push
+        [switch]$NoPush
     )
 
     Test-Dependency "git" -Source "git.git" -App
@@ -58,9 +54,15 @@ function Invoke-GitAmend {
         }
 
         $remoteHash = git rev-parse '@{u}' 2>$null
-        if ($remoteHash -or $PUsh) {
+        if (-not $NoPush -and $remoteHash) {
             Write-Verbose "Branch has a remote tracking branch. Auto-pushing amended commit..."
             git push --force-with-lease
+        }
+        elseif ($NoPush) {
+            Write-Verbose "No push to remote requested."
+        }
+        else {
+            Write-Verbose "No remote tracking detected."
         }
 
         Write-Host "Successfully amended latest commit." -ForegroundColor Green
