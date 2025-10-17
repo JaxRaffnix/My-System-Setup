@@ -71,3 +71,4 @@ function Invoke-GitAmend {
 # Create a short alias
 Set-Alias ga Invoke-GitAmend
 Set-Alias Git-Amend Invoke-GitAmend
+
