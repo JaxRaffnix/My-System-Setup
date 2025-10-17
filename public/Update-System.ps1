@@ -75,6 +75,8 @@ function Update-System {
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent 
+            winget upgrade --all --accept-package-agreements --accept-source-agreements `
+                --disable-interactivity --include-unknown --include-pinned --silent 
             $updatedCategories += "Winget applications"
         } catch {
             Write-Error "Failed to update applications via winget: $_"
