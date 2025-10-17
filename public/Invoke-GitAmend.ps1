@@ -42,12 +42,11 @@ function Invoke-GitAmend {
     Push-Location $Path
 
     try {
-        git fetch | Out-Null
+        git fetch --quiet | Out-Null
 
         $status = git status -uno
         if ($status -match "Your branch is behind" -or $status -match "have diverged") {
-            Write-Host "Pulling latest changes to sync with remote ..."
-            git pull
+            Write-Warning "Remote branch has changed since your last push. Your amend will overwrite it."
         }
 
         git add -A
@@ -58,10 +57,12 @@ function Invoke-GitAmend {
             git commit --amend --no-edit
         }
 
-        if ($Push) {
-            git pull
-            git push
+        $remoteHash = git rev-parse '@{u}' 2>$null
+        if ($remoteHash -or $PUsh) {
+            Write-Verbose "Branch has a remote tracking branch. Auto-pushing amended commit..."
+            git push --force-with-lease
         }
+
         Write-Host "Successfully amended latest commit." -ForegroundColor Green
     } catch {
         Throw "Failed to amend latest commit: $_"
