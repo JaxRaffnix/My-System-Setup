@@ -70,7 +70,7 @@ function Remove-UnwantedShortcuts {
                 } else {
                     try {
                         gsudo Remove-Item $Shortcut.FullName -Force -ErrorAction Stop
-                        Write-Host "Removed shortcut: $($Shortcut.FullName)"
+                        Write-Warning "Removed shortcut: $($Shortcut.FullName)"
                     } catch {
                         Write-Error "Failed to remove shortcut '$($Shortcut.Name)': $_"
                     }
@@ -79,5 +79,5 @@ function Remove-UnwantedShortcuts {
         }
     }
 
-    Write-Host "Finished processing all provided paths: $paths." -ForegroundColor Green
+    Write-Host "Successfully removed unwanted shortcuts from: $($Paths -join " , ")" -ForegroundColor Green
 }
