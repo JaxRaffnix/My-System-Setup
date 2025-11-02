@@ -69,7 +69,7 @@ function Remove-UnwantedShortcuts {
                     Write-Host "[DryRun] Would remove: $($Shortcut.FullName)"
                 } else {
                     try {
-                        gsudo Remove-Item $Shortcut.FullName -Force -ErrorAction Stop
+                        gsudo Remove-Item "`"$($Shortcut.FullName)`"" -Force -ErrorAction Stop
                         Write-Warning "Removed shortcut: $($Shortcut.FullName)"
                     } catch {
                         Write-Error "Failed to remove shortcut '$($Shortcut.Name)': $_"
