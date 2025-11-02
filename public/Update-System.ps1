@@ -73,7 +73,11 @@ function Update-System {
             $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
                                 Select-Object -ExpandProperty Name
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
+            Write-Verbose "Running winget upgrade in admin mode ..."
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
+                --disable-interactivity --include-unknown --include-pinned --silent 
+            Write-Verbose "Running winget upgrade in user mode ..."
+            winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent 
             $updatedCategories += "Winget applications"
         } catch {

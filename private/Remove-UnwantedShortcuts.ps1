@@ -79,5 +79,5 @@ function Remove-UnwantedShortcuts {
         }
     }
 
-    Write-Host "Successfully removed unwanted shortcuts from: $($Paths -join " , ")" -ForegroundColor Green
+    Write-Verbose "Finished removing unwanted shortcuts in paths: $paths."
 }
