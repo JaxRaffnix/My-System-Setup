@@ -4,23 +4,26 @@ function Invoke-Diagnostics {
     Runs a suite of system and storage diagnostics.
 
     .DESCRIPTION
-    Executes system health and storage checks as defined in an external YAML file.
-    The YAML file references external PowerShell script files, which are executed independently.
+    Executes system health, storage, and cleanup scripts located in a diagnostics folder.
+    Each category (System, Storage, Cleanup) corresponds to a separate script file.
 
     .PARAMETER System
-    Runs Windows Defender, reliability, DISM, SFC, CHKDSK, and update checks.
+    Runs system diagnostics (system.ps1).
 
     .PARAMETER Storage
-    Runs disk health, space usage, and large-file analysis.
+    Runs storage diagnostics (storage.ps1).
 
     .PARAMETER Cleanup
-    Performs cleanup tasks (delegates to Invoke-SystemCleanup).
+    Runs cleanup tasks (cleanup.ps1).
 
     .PARAMETER All
-    Runs all categories (System, Storage, and Cleanup).
+    Runs all categories.
 
-    .EXAMPLE
-    Invoke-Diagnostics -System -Storage
+    .PARAMETER ConfigPath
+    Path to the diagnostics folder containing the scripts.
+
+    .PARAMETER ReportFile
+    Path to save the output report.
     #>
 
     [CmdletBinding()]
@@ -30,7 +33,6 @@ function Invoke-Diagnostics {
         [switch]$Cleanup,
         [switch]$All,
 
-        [Parameter(Mandatory=$false)]
         [string]$ConfigPath = "$PSScriptRoot/../config/diagnostics/",
         [string]$ReportFile = "$env:USERPROFILE\Documents\$(Get-Date -Format 'yyyyMMdd_HHmm')_SystemDiagnostics.txt"
     )
@@ -54,39 +56,32 @@ function Invoke-Diagnostics {
     gsudo cache on | Out-Null
     Test-Dependency "Get-WindowsUpdate" -Module -Source "PSWindowsUpdate"
 
-    try {
-        Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"    
-        $rawYaml = Get-Content -Path Join-Path $ConfigPath "diagnostics.yaml" -Raw -ErrorAction Stop
-        $checks = $rawYaml | ConvertFrom-Yaml
-    }
-    catch {
-        throw "Failed to load diagnostics YAML: $_"
-    }
+    $categories = @{}
+    if ($System)  { $categories['System']  = 'system.ps1' }
+    if ($Storage) { $categories['Storage'] = 'storage.ps1' }
+    if ($Cleanup) { $categories['Cleanup'] = 'cleanup.ps1' }
 
-    $selected = @()
-    if ($System)  { $selected += 'System' }
-    if ($Storage) { $selected += 'Storage' }
-    if ($Cleanup) {$selected += 'Cleanup'}
-
-    Write-Verbose "Running diagnostic categories: $($selected -join ', ')" 
+    Write-Verbose "Running diagnostic categories: $($categories -join ', ')" 
     
-    foreach ($category in $selected) {
+    foreach ($category in $categories.Keys) {
         Add-Content -Path $ReportFile -Value "`n===== $category =====`n"
-        foreach ($item in $checks.$category) {
-            Add-Content -Path $ReportFile -Value "`n--- $($item.Title) ---`n"
-            Write-Host "`n=== $($item.Title) ===" -ForegroundColor Cyan
-            try {
-                $scriptPath = Join-Path $ConfigPath $item.Script
-                if (-not (Test-Path $scriptPath)) {
-                    throw "Script file not found: $scriptPath"
-                }
-                $result = & $scriptPath 2>&1 | Tee-Object -Variable result
-                Add-Content -Path $ReportFile -Value $result
-            } catch {
-                Add-Content -Path $ReportFile -Value "[$($item.Title)] failed: $($_.Exception.Message)"
-                Write-Error "[$($item.Title)] failed: $($_.Exception.Message)"
-            }
+        Write-Host "`n=== Running $category ===" -ForegroundColor Cyan
+
+        $scriptPath = Join-Path $ConfigPath $categories[$category]
+        if (-not (Test-Path $scriptPath)) {
+            Add-Content -Path $ReportFile -Value "[$category] script not found: $scriptPath"
+            Write-Error "[$category] script not found: $scriptPath"
+            continue
+        }
+
+        try {
+            $result = & $scriptPath 2>&1 | Tee-Object -Variable result
+            Add-Content -Path $ReportFile -Value $result
+        } catch {
+            Add-Content -Path $ReportFile -Value "[$category] failed: $($_.Exception.Message)"
+            Write-Error "[$category] failed: $($_.Exception.Message)"
         }
     }
+
     Write-Host "Successfully run diagnostics and saved report to '$ReportFile'." -ForegroundColor Green
 }

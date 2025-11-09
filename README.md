@@ -63,7 +63,7 @@ For a full function documentation, please refer to the relevant help text by run
 
 ### Invoke-Diagnostics
 
-- Executed code stored in `/config/system_diagnostics.yaml`.  
+- Executed code stored in `/config/diagnostics`.  
 - Logs saved to `$env:USERPROFILE\Documents`.  
 - Checks:  
   - **System:** Defender status, reliability issues, startup apps, DISM & SFC, installed/pending updates  

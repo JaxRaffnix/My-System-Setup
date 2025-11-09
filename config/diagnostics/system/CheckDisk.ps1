@@ -1,1 +1,0 @@
-gsudo chkdsk C: /spotfix
