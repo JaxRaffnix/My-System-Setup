@@ -43,7 +43,7 @@ For a full function documentation, please refer to the relevant help text by run
   - **PSScriptTools:** `Show-Tree -InColor -ShowItem`  
   - **Terminal-Icons:** `Get-ChildItem -Path . -Force`  
   - **PSReadLine:** auto-completion with `CTRL+SPACE`  
-  - **PSWindowsUpdate:** `PSWritePDF`  
+  - **PSWindowsUpdate:** `PSWritePDF`.
 
 ### New-User-Folders
 
@@ -86,10 +86,11 @@ For a full function documentation, please refer to the relevant help text by run
 
 ### Unsure
 
-- Ebook reader `aquile` ID: `9P08T4JLTQNK`  
+- Simplify Diagnostic checks: only one script file per category?
+- Ebook reader `aquile` ID: `9P08T4JLTQNK`.
 
 ### Known Issues
 
 - Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
 - Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
-- BattleNet requires a specific install location (e.g., `C:\Program Files (x86)`).  
+- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  

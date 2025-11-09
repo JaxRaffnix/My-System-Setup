@@ -5,6 +5,7 @@ function Invoke-Diagnostics {
 
     .DESCRIPTION
     Executes system health and storage checks as defined in an external YAML file.
+    The YAML file references external PowerShell script files, which are executed independently.
 
     .PARAMETER System
     Runs Windows Defender, reliability, DISM, SFC, CHKDSK, and update checks.
@@ -30,7 +31,7 @@ function Invoke-Diagnostics {
         [switch]$All,
 
         [Parameter(Mandatory=$false)]
-        [string]$ConfigPath = "$PSScriptRoot/../config/system_diagnostics.yaml",
+        [string]$ConfigPath = "$PSScriptRoot/../config/diagnostics/",
         [string]$ReportFile = "$env:USERPROFILE\Documents\$(Get-Date -Format 'yyyyMMdd_HHmm')_SystemDiagnostics.txt"
     )
 
@@ -45,7 +46,7 @@ function Invoke-Diagnostics {
         throw "No diagnostic category selected. Use -System, -Storage, -Cleanup or -All."
     }
     if (-not (Test-Path $ConfigPath)) {
-        throw "Diagnostics configuration file not found: $ConfigPath"
+        throw "Diagnostics configuration folder not found: $ConfigPath"
     }
 
     # Prerequisite checks
@@ -55,7 +56,7 @@ function Invoke-Diagnostics {
 
     try {
         Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"    
-        $rawYaml = Get-Content -Path $ConfigPath -Raw -ErrorAction Stop
+        $rawYaml = Get-Content -Path Join-Path $ConfigPath "diagnostics.yaml" -Raw -ErrorAction Stop
         $checks = $rawYaml | ConvertFrom-Yaml
     }
     catch {
@@ -75,7 +76,11 @@ function Invoke-Diagnostics {
             Add-Content -Path $ReportFile -Value "`n--- $($item.Title) ---`n"
             Write-Host "`n=== $($item.Title) ===" -ForegroundColor Cyan
             try {
-                Invoke-Expression $item.Command 2>&1 | Tee-Object -Variable result
+                $scriptPath = Join-Path $ConfigPath $item.Script
+                if (-not (Test-Path $scriptPath)) {
+                    throw "Script file not found: $scriptPath"
+                }
+                $result = & $scriptPath 2>&1 | Tee-Object -Variable result
                 Add-Content -Path $ReportFile -Value $result
             } catch {
                 Add-Content -Path $ReportFile -Value "[$($item.Title)] failed: $($_.Exception.Message)"

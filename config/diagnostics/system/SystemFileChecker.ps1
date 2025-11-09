@@ -1,0 +1,1 @@
+gsudo sfc /scannow
