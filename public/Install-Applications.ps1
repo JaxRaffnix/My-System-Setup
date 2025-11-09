@@ -1,4 +1,45 @@
 function Install-Applications {
+<#
+.SYNOPSIS
+    Install application categories and PowerShell modules defined in a YAML configuration.
+
+.DESCRIPTION
+    Install-Applications reads an applications YAML configuration (default: ../config/applications.yaml)
+    and installs items in one or more categories. Categories can contain PowerShell modules
+    and 'winget' application IDs. The cmdlet uses helper functions `Install-PSModule` and
+    `Install-App` for installing modules and winget apps respectively. It also ensures
+    `gsudo` is available and enables its cache.
+
+    This function supports WhatIf/Confirm through SupportsShouldProcess on module and app installs.
+
+.PARAMETER All
+    Switch. Install all categories from the configuration.
+
+.PARAMETER Init
+    Switch. Install the 'Init' category.
+
+.PARAMETER Core
+    Switch. Install the 'Core' category.
+
+.PARAMETER Messengers
+    Switch. Install the 'Messengers' category.
+
+.PARAMETER ProgrammingTools
+    Switch. Install the 'ProgrammingTools' category.
+
+.PARAMETER Games
+    Switch. Install the 'Games' category.
+
+.PARAMETER ConfigPath
+    Path to the applications YAML configuration file. Defaults to "$PSScriptRoot/../config/applications.yaml".
+
+.EXAMPLE
+    Install-Applications -All
+
+.EXAMPLE
+    Install-Applications -Core -ProgrammingTools -ConfigPath 'C:\configs\apps.yaml'
+#>
+
     [CmdletBinding(SupportsShouldProcess=$true)]
     param (
         [switch]$All,

@@ -31,7 +31,7 @@ function Invoke-Diagnostics {
 
         [Parameter(Mandatory=$false)]
         [string]$ConfigPath = "$PSScriptRoot/../config/system_diagnostics.yaml",
-        [string]$ReportFile = "$env:USERPROFILE\Desktop\SystemDiagnostics_$(Get-Date -Format 'yyyyMMdd_HHmmss').txt"
+        [string]$ReportFile = "$env:USERPROFILE\Documents\$(Get-Date -Format 'yyyyMMdd_HHmm')_SystemDiagnostics.txt"
     )
 
     # Expand group switches

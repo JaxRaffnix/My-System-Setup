@@ -8,7 +8,7 @@ Core:
   winget:
     - "M2Team.NanaZip"
     - "Git.Git"
-    - "9WZDNCRD29V9"  # Microsoft 365 Copilo
+    - "9WZDNCRD29V9"  # Microsoft 365 Copilot
     - "Microsoft.VisualStudioCode"
     - "Microsoft.PowerToys"
     - "KeePassXCTeam.KeePassXC"

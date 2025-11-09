@@ -82,14 +82,14 @@ Cleanup:
       Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
       Remove-Item "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-Performance:
-  - Title: Memory Usage
-    Command: |
-      Get-CimInstance Win32_OperatingSystem |
-      Select-Object @{Name="TotalMB"; Expression={[math]::Round($_.TotalVisibleMemorySize/1024, 2)}},
-                    @{Name="FreeMB"; Expression={[math]::Round($_.FreePhysicalMemory/1024, 2)}},
-                    @{Name="UsedMB"; Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1024, 2)}} |
-      Format-List | Out-String
+# Performance:
+#   - Title: Memory Usage
+#     Command: |
+#       Get-CimInstance Win32_OperatingSystem |
+#       Select-Object @{Name="TotalMB"; Expression={[math]::Round($_.TotalVisibleMemorySize/1024, 2)}},
+#                     @{Name="FreeMB"; Expression={[math]::Round($_.FreePhysicalMemory/1024, 2)}},
+#                     @{Name="UsedMB"; Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1024, 2)}} |
+#       Format-List | Out-String
 
-  - Title: CPU Usage Snapshot
-    Command: Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 1 | Select-Object -ExpandProperty CounterSamples | Select-Object InstanceName, CookedValue | Format-Table | Out-String
+#   - Title: CPU Usage Snapshot
+#     Command: Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 1 | Select-Object -ExpandProperty CounterSamples | Select-Object InstanceName, CookedValue | Format-Table | Out-String

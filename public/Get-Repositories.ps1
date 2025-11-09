@@ -1,3 +1,27 @@
+<#
+.SYNOPSIS
+    Clone repositories defined in a YAML configuration into a target directory.
+
+.DESCRIPTION
+    Get-Repositories reads a YAML file (default: ../config/repositories.yaml relative to the script)
+    which contains a 'repositories' list with objects that include at least 'Name' and 'Url' fields.
+    For each repository entry the function will create the target directory if it does not exist,
+    skip repositories that already exist at the destination, and attempt to clone the remaining
+    repositories using 'git clone'. This cmdlet supports WhatIf/Confirm via SupportsShouldProcess.
+
+.PARAMETER TargetPath
+    Path to the directory where repositories will be cloned. This parameter is mandatory.
+
+.PARAMETER ConfigPath
+    Path to the repositories YAML configuration file. Defaults to "$PSScriptRoot/../config/repositories.yaml".
+
+.EXAMPLE
+    Get-Repositories -TargetPath 'C:\src\repos'
+
+.EXAMPLE
+    Get-Repositories -TargetPath 'C:\src\repos' -ConfigPath 'C:\config\my-repos.yaml'
+#>
+
 function Get-Repositories {
 
     [CmdletBinding(SupportsShouldProcess=$true)]

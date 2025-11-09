@@ -1,258 +1,95 @@
 # My System Setup
 
-This PowerShell Setups called My-System-Setup (MSS) simplifies the device configuration for Windows machines.
+**My System Setup (MSS)** is a PowerShell-based toolkit to simplify the initial configuration of a new Windows machine. It includes app installation, system checks, Git utilities, and an easy-to-use update function.  
 
-Features:
+## 🌟 Features
 
-- Install a list of applications
-  - Core tools
-  - messengers
-  - Programming tools
-  - game launchers
-- (Apply default settings)
-- Create a consistent folder structure for the user
-- Clone a list of mandatory git repositories.
-- Check System Integrity
-  - SystemHealth
-  - storage health
-  - cleanup data
-- Provide an update command
-  - update installed apps
-  - update windows
-  - (update graphics drivers)
-  - update powershell modules
-  - update pip and packages
-- automatically removes default app shortcuts after install or update.
-- provide a function to amend the latest git commit. Has the alias ga
+- **Install Applications:** Core tools, messengers, programming tools, and game launchers from configuration file.  
+- **Create User Folders:** Automatically creates the folders `Workspace`, `Coding` and `Temp`. Supports Explorer Shortcuts and Quick Access pinning.  
+- **Clone Git Repositories:** Fetch repositories from GitHub defined in config file. Defaults:  
+  - [Hilfestellung](https://github.com/JaxRaffnix/Hilfestellung.git)  
+  - [Powershell-ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools.git)  
+- **Git Utilities:** Create Shorthand to amend last commit with optional push.  
+- **System Diagnostics:** Check Windows health, disk usage, pending updates, and remove clutter.  
+- **Update System:** Update apps, PowerShell modules, Python packages, and Windows updates automatically.  
+- **Dependency Management:** Verify and install missing apps or modules automatically.  
 
-## Unsure
+## ⚡ Getting Started
 
-```
-- "NuGet"
-- "PowerShellGet"
-- "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted"
-- everything
-```
+> [!Note]
+> You may need to run: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
-TODO: find a simple way to install c++ toolchains. current solution is msys2
+MSS is provided as a PowerShell module. To install and import it to the `PSModulePath` for your user, we utilize a helper function from another project:  
 
-## Best Practices
+1. Download [Powershell ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools).
+2. Use the `.\self-installer.ps1` script from the `ModuleTools`.
+3. Download [My System Setup](https://github.com/JaxRaffnix/My-System-Setup)
+4. Now run `Install-FromDev .` from your My-System-Setup location.
 
-```
-function Verb-Noun {
-    <#
-    .SYNOPSIS
-        Short one-line summary.
+The following dependencies are automatically installed with this module:
 
-    .DESCRIPTION
-        Detailed description of what the function does, what it installs/configures, etc.
+- [gsudo](https://github.com/gerardog/gsudo)  
+- NuGet Package Provider
+- PSRepository PSGallery is set as a Trusted.
 
-    .PARAMETER 
-        Mandatory target location.
+## 🛠 Feature Details
 
-    .PARAMETER ConfigPath
-        Optional YAML/JSON configuration file path.
+For a full function documentation, please refer to the relevant help text by running `help <function>`.
 
-    .EXAMPLE
-        Verb-Noun -ConfigPath "./config/myconfig.yaml" -Verbose
+### Install-Applications
 
-    .NOTES
-        Author: Jan Hoegen
-        Part of: My-System-Setup
-    #>
+- Uses categories defined in `/config/applications.yaml`.  
+- Core modules include:  
+  - **PSScriptTools:** `Show-Tree -InColor -ShowItem`  
+  - **Terminal-Icons:** `Get-ChildItem -Path . -Force`  
+  - **PSReadLine:** auto-completion with `CTRL+SPACE`  
+  - **PSWindowsUpdate:** `PSWritePDF`  
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$TargetPath,
+### New-User-Folders
 
-        [Parameter(Mandatory = $false)]
-        [string]$ConfigPath = "$PSScriptRoot/../config/default.yaml"
-    )
+- Defined in `/config/folders.yaml`.  
+- Folders created: `workspace`, `coding`, `temp`.  
+- Supports desktop shortcuts and Quick Access pins.  
 
-    Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"
-   
-    if (-not (Test-Path $ConfigPath)) {
-        throw "Configuration file not found at '$ConfigPath'."
-    }
-    try {
-        $config = (Get-Content -Path $ConfigPath -Raw) | ConvertFrom-Yaml
-    } catch {
-        throw "Failed to parse configuration: $_"
-    }
+### Get-Repositories
 
-    if (-not (Test-Path $TargetPath)) {
-        New-Item -Path $TargetPath -ItemType Directory -Force | Out-Null
-        Write-Verbose "Created target directory '$TargetPath'."
-    }
+- Clone repositories listed in `/config/repositories.yaml`.  
+- Example repos: Hilfestellung, Powershell-ModuleTools.  
 
-    foreach ($item in $config.Items) {
-        $action = $item.Action
-        try {
+### Invoke-GitAmend
 
-            # Do something like installing, copying, or configuring...
-            # Install-App -AppId $item.AppId
-            # or
-            # git clone $item.Url $TargetPath
+- `Invoke-Gitamend` (alias `ga` or `Git-Amend`) with optional message.  
+- Supports `git push --force-with-lease` if remote tracking exists.  
 
-            Write-Verbose "Successfully processed '$action'."
-        } catch {
-            Write-Error "Failed to process '$action': $_"
-        }
-    }
+### Invoke-Diagnostics
 
-    Write-Host "Successfully ... at '$TargetPath'." -ForegroundColor Green
-}
+- Executed code stored in `/config/system_diagnostics.yaml`.  
+- Logs saved to `$env:USERPROFILE\Documents`.  
+- Checks:  
+  - **System:** Defender status, reliability issues, startup apps, DISM & SFC, installed/pending updates  
+  - **Storage:** Disk health, usage summary, large files  
+  - **Cleanup:** Remove broken shortcuts, disk cleanup, empty recycle bin, clear temp/cache  
 
-```
+### Update-System
 
+- Updates apps with Winget, PowerShell modules, Python packages, and Windows updates.  
+- Runs updates as both admin and normal user.  
 
-## Old Readme
+### Test-Dependency
 
-<!-- LTeX: language=en-US -->
+- Ensures required apps/modules are installed, auto-installing if missing.  
 
-# WinSetup - Windows Configuration Helper
+## ✅ TO DO
 
-A PowerShell module designed to streamline the process of configuring Windows environments. With **WinSetup**, tasks such as creating user folders, setting up Git, and installing software using **Winget** are automated.
+- Pin Taskbar apps: `C:\Users\<User>\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar`  
+- Ensure C compiler works with installed Strawberry Perl  
 
-## Table of Contents
+### Unsure
 
-- [My System Setup](#my-system-setup)
-  - [Unsure](#unsure)
-  - [Best Practices](#best-practices)
-  - [Old Readme](#old-readme)
-- [WinSetup - Windows Configuration Helper](#winsetup---windows-configuration-helper)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Installation](#installation)
-    - [Prerequisites](#prerequisites)
-    - [Steps](#steps)
-    - [Manual Configurations](#manual-configurations)
-  - [Usage](#usage)
-    - [Available Commands](#available-commands)
-    - [Imported Modules](#imported-modules)
-  - [Development](#development)
-    - [Updating the Manifest](#updating-the-manifest)
-    - [Known Issues](#known-issues)
-    - [Unsure to Include](#unsure-to-include)
-    - [To Do](#to-do)
-
-
-## Features
-
-- **User Folder Management**: Automatically creates common user folders (e.g., `Temp`, `Coding`, `Workspace`).
-- **Quick Access Integration**: Adds folders to Quick Access and creates desktop shortcuts.
-- **System Customization**: Configures wallpapers, explorer settings, and other system settings.
-- **Git Configuration**: Sets up a local Git account with user details.
-- **Software Installation**: Installs applications using **Winget**.
-- **Repository Management**: Clones repositories to a specified target folder.
-- **System Integrity Testing**: Verifies system health and configuration.
-
-## Installation
-
-### Prerequisites
-
-- Windows PowerShell 5.1 or later.
-- Administrative privileges.
-- Internet connection for downloading dependencies.
-
-### Steps
-
-1. Allow the execution of script files:
-
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-2. Clone the repository:
-
-```powershell
-git clone https://github.com/JaxRaffnix/WinSetup.git
-```
-
-3. Navigate to the setup folder:
-
-```powershell
-cd WinSetup/setup
-```
-
-4. Install the module:
-
-```powershell
-.\install.ps1
-```
-
-5. Configure your machine with custom setup parameters (optionally change configuration details)
-
-```powershell
-config\DefaultSetup.ps1
-```
-
-### Manual Configurations
-
-- **Visual Studio Code:** Settings and extensions are managed via your GitHub account.
-- **KeepassXC:** Enable browser integration for Google Chrome in the settings. Enable lock after x seconds. Set Auto Type Shortcut to `CTRL+ALT+A`.
-- **MikTeX:** Check for upgrades.
-- **Thunderbird:** Include Adress Book and Calender from `jan.hoegen.akathebozz@gmail.com`
-
-## Usage
-
-### Available Commands
-
-| Command                      | Description                                                                                   | Example Usage                                 |
-|------------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------|
-| `ga`                         | Alias for amending the latest Git commit with all current changes.                            | `ga`                                          |
-| `Copy-Repositories`          | Clones a list of repositories to a specified target folder.                                   | `Copy-Repositories -RepoUrls @("https://github.com/user/repo1.git", "https://github.com/user/repo2.git") -TargetFolder "$HOME\Projects"`  |
-| `Install-Applications`       | Installs a predefined list of applications using Winget.                                      | `Install-Applications -All`                        |
-| `Install-MSOffice`           | Installs Microsoft Office suite using the appropriate installer.                              | `Install-MSOffice -ConfigLocation "$HOME\OfficeConfig.xml"`                            |
-| `Set-Posh`                   | Installs and configures Oh My Posh for PowerShell prompt customization.                       | `Set-Posh -FontName "MesloLGM Nerd Font"`                                    |
-| `New-UserFolders`            | Creates common user folders (e.g., Temp, Coding, Workspace) in the user's profile directory.  | `New-UserFolders -Folders @("Workspace", "Coding") -CreateDesktopShortcuts -PinToQuickAccess`                             |
-| `Set-GitConfiguration`       | Configures Git user name, email, and other settings for the current user.                     | `Set-GitConfiguration -UserName "Alice" -UserEmail "alice@example.com"` |
-| `Set-WindowsConfiguration`   | Applies system settings such as explorer preferences and privacy options.                      | `Set-WindowsConfiguration -All`                    |
-| `Set-WallpaperAndLockScreen` | Sets the desktop wallpaper and lock screen image.                                             | `Set-WallpaperAndLockScreen -WallpaperPath "$HOME\Images\wallpaper.jpg" -LockScreenPath "$HOME\Images\lockscreen.jpg"`        |
-| `Test-SystemIntegrity`       | Runs checks to verify system health and configuration integrity.                              | `Test-SystemIntegrity -All`                        |
-| `Update-Applications`        | Updates installed applications via Winget.                                                    | `Update-Applications`                         |
-
-> [!NOTE] 
-> Use `Get-Help <Command>` in PowerShell for detailed usage and parameter information.
-
-### Imported Modules
-
-- PSScriptTools, eg. Show-Tree -InColor -ShowItem
-- Terminal-Icons, Get-ChildItem -Path . -Force
-- PSReadLine, `CTRL+SPACE` for auto complete
-
-## Development
-
-### Updating the Manifest
-
-To regenerate the module's manifest file, run:
-
-```powershell
-.\Generate-Manifest.ps1
-```
+- Ebook reader `aquile` ID: `9P08T4JLTQNK`  
 
 ### Known Issues
 
-- `Set-GitConfiguration` aborts if user name and email already match. The other settings are ignored.
-- Some App IDs are strings, not a descriptive name. E.g. `9NKSQGP7F2NH` for WhatsApp.
-- Python versions have to be installed explicitly: `Python.Python.3.13`
-- BattleNet requires an install location. Specify the install root: `C:\Program Files (x86)`.
-- No explicit C compiler is necessary, it is already part of Strawberry.
-
-### Unsure to Include
-
-- Zoom.Zoom
-- ebook reader aquile: 9P08T4JLTQNK 
-
-### To Do
-
-- Taskbar Pinned Apps: C:\Users\Jax\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar
-- add oh my posh installer script to winsetup/psrbackup
-
-Thoughts: move applicable stuff to backup and restore module for a general application, this is a typical workflow:
-
-1. install app from config file
-2. edit system to work with app
-3. restore app specific settings from backup
-4. save app settings and overwrite backup.
+- Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
+- Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
+- BattleNet requires a specific install location (e.g., `C:\Program Files (x86)`).  
