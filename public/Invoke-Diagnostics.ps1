@@ -33,7 +33,7 @@ function Invoke-Diagnostics {
         [switch]$Cleanup,
         [switch]$All,
 
-        [string]$ConfigPath = "$PSScriptRoot/../config/diagnostics/",
+        [string]$ConfigPath = "$PSScriptRoot/../scripts/diagnostics/",
         [string]$ReportFile = "$env:USERPROFILE\Documents\$(Get-Date -Format 'yyyyMMdd_HHmm')_SystemDiagnostics.txt"
     )
 

@@ -5,6 +5,8 @@ Core:
     - "PSReadLine"
     - "PSWindowsUpdate"
     - "PSWritePDF"
+    - "powershell-yaml"
+    - "PSWindowsUpdate"
   winget:
     - "M2Team.NanaZip"
     - "Git.Git"

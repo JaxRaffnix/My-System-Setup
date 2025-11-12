@@ -18,7 +18,7 @@ function New-UserFolders {
         [string]$ConfigPath = "$PSScriptRoot/../config/folders.yaml"
     )
 
-    Test-Dependency "Get-WindowsUpdate" -Module -Source "PSWindowsUpdate"
+    Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"
 
     try {
         $yamlContent = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Yaml
