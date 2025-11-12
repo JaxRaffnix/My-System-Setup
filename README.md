@@ -1,36 +1,57 @@
 # My System Setup
 
-**My System Setup (MSS)** is a PowerShell-based toolkit to simplify the initial configuration of a new Windows machine. It includes app installation, system checks, Git utilities, and an easy-to-use update function.  
+**My System Setup (MSS)** is a PowerShell-based toolkit to simplify the setup, configuration, and maintenance of new Windows systems.  
+It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps as well as Windows.
 
-## 🌟 Features
+## 🚀 Features
 
-- **Install Applications:** Core tools, messengers, programming tools, and game launchers from configuration file.  
-- **Create User Folders:** Automatically creates the folders `Workspace`, `Coding` and `Temp`. Supports Explorer Shortcuts and Quick Access pinning.  
-- **Clone Git Repositories:** Fetch repositories from GitHub defined in config file. Defaults:  
-  - [Hilfestellung](https://github.com/JaxRaffnix/Hilfestellung.git)  
-  - [Powershell-ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools.git)  
-- **Git Utilities:** Create Shorthand to amend last commit with optional push.  
-- **System Diagnostics:** Check Windows health, disk usage, pending updates, and remove clutter.  
-- **Update System:** Update apps, PowerShell modules, Python packages, and Windows updates automatically.  
-- **Dependency Management:** Verify and install missing apps or modules automatically.  
+### 💻 System & Application Setup
+
+- **Install Applications:** Installs PowerShell modules and Winget apps from structured YAML categories:
+  - Core tools
+  - Messengers
+  - Programming tools
+  - Game launchers
+- **Create User Folders:** Automatically sets up workspace directories with desktop shortcuts and Quick Access pinning.
+- **Clone Git Repositories:** Fetches repositories defined in configuration.
+
+### 🔧 Utilities & Tools
+
+- **Git Utilities:** Creates an alias to amend the last commit and optionally push.
+- **System Diagnostics:** Check system health, storage, and cleanup unused files.
+- **System Update Manager:** Update winget apps, PowerShell modules, Python packages, and Windows updates from one command.
+- **Dependency Provider:** Verify and install missing modules or apps.
 
 ## ⚡ Getting Started
 
 > [!Note]
-> You may need to run: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`
+> Before running MSS, set your PowerShell execution policy:
+> ```powershell
+> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
 
-MSS is provided as a PowerShell module. To install and import it to the `PSModulePath` for your user, we utilize a helper function from another project:  
+MSS is provided as a PowerShell module and can be installed with the help of the [PowerShell ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools) project.
 
-1. Download [Powershell ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools).
-2. Use the `.\self-installer.ps1` script from the `ModuleTools`.
-3. Download [My System Setup](https://github.com/JaxRaffnix/My-System-Setup)
-4. Now run `Install-FromDev .` from your My-System-Setup location.
+### Installation Steps
+
+1. Download [Powershell ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools).  
+2. Run its installer:
+    ```powershell
+    .\self-installer.ps1.
+    ```
+3. Clone [My System Setup](https://github.com/JaxRaffnix/My-System-Setup)
+4. From its directory, run:
+    ```powershell
+    Install-FromDev .
+    ```
+
+### Dependencies
 
 The following dependencies are automatically installed with this module:
 
 - [gsudo](https://github.com/gerardog/gsudo)  
 - NuGet Package Provider
-- PSRepository PSGallery is set as a Trusted.
+- PSGallery is set as a trusted PSRepository.
 
 ## 🛠 Feature Details
 
@@ -39,7 +60,7 @@ For a full function documentation, please refer to the relevant help text by run
 ### Install-Applications
 
 - Uses categories defined in `/config/applications.yaml`.  
-- Core modules include:  
+- Highlights and their use case for some core category modules are:  
   - **PSScriptTools:** `Show-Tree -InColor -ShowItem`  
   - **Terminal-Icons:** `Get-ChildItem -Path . -Force`  
   - **PSReadLine:** auto-completion with `CTRL+SPACE`  
@@ -47,33 +68,37 @@ For a full function documentation, please refer to the relevant help text by run
 
 ### New-User-Folders
 
-- Defined in `/config/folders.yaml`.  
-- Folders created: `workspace`, `coding`, `temp`.  
+- Creates folders for the user space defined in `/config/folders.yaml`:
+  - `Workspace`
+  - `Coding`
+  - `Temp`  
 - Supports desktop shortcuts and Quick Access pins.  
 
 ### Get-Repositories
 
-- Clone repositories listed in `/config/repositories.yaml`.  
-- Example repos: Hilfestellung, Powershell-ModuleTools.  
+- Clone repositories listed in `/config/repositories.yaml`:  
+  - [Hilfestellung](https://github.com/JaxRaffnix/Hilfestellung.git)  
+  - [Powershell-ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools.git)  
 
 ### Invoke-GitAmend
 
-- `Invoke-Gitamend` (alias `ga` or `Git-Amend`) with optional message.  
+- Amend latest commit with optional message.  
+- Alias `ga` or `Git-Amend`.
 - Supports `git push --force-with-lease` if remote tracking exists.  
 
 ### Invoke-Diagnostics
 
-- Executed code stored in `/config/diagnostics`.  
-- Logs saved to `$env:USERPROFILE\Documents`.  
 - Checks:  
   - **System:** Defender status, reliability issues, startup apps, DISM & SFC, installed/pending updates  
   - **Storage:** Disk health, usage summary, large files  
   - **Cleanup:** Remove broken shortcuts, disk cleanup, empty recycle bin, clear temp/cache  
+- Code to execute stored in `/scripts/diagnostics`.  
+- Logs saved to `$env:USERPROFILE\Documents`.  
 
 ### Update-System
 
 - Updates apps with Winget, PowerShell modules, Python packages, and Windows updates.  
-- Runs updates as both admin and normal user.  
+- Runs winget updates as both admin and normal user.  
 
 ### Test-Dependency
 
@@ -81,12 +106,10 @@ For a full function documentation, please refer to the relevant help text by run
 
 ## ✅ TO DO
 
-- Pin Taskbar apps: `C:\Users\<User>\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar`  
-- Ensure C compiler works with installed Strawberry Perl  
+- Ensure C compiler works with installed Strawberry  
 
 ### Unsure
 
-- Simplify Diagnostic checks: only one script file per category?
 - Ebook reader `aquile` ID: `9P08T4JLTQNK`.
 
 ### Known Issues

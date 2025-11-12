@@ -52,18 +52,18 @@ function Test-Dependency {
         Write-Verbose "Successully validated '$Command'."
     }
     catch {
-        Write-Warning "$Command is not installed or not available."
+        Write-Warning "'$Command' is not installed or not available."
 
         if ($DisableInstall) {
-            throw "Automatic install for missing $Command is disabled. Please run a manual install for $Source."
+            throw "Automatic install for missing $Command is disabled. Please install $Source manually."
         }
 
         if ($App) {
-            Write-Verbose "Trying to install $Command via winget AppId: $Source ..."
+            Write-Verbose "Installing $Command via winget (AppId: $Source)..."
             Install-App -Id $Source
         }
         elseif ($Module) {
-            Write-Verbose "Trying to install PowerShell module: $Source ..."
+            Write-Verbose "Installing $Command via PowerShell (Module: $Source)..."
             Install-PSModule -ModuleName $Source
         }
         else {
@@ -74,6 +74,7 @@ function Test-Dependency {
         try {
             Get-Command -Name $Command -ErrorAction Stop | Out-Null
             Write-Verbose "Dependency '$Command' installed successfully."
+            return $true
         }
         catch {
             throw "Dependency '$Command' could not be validated after installation."
