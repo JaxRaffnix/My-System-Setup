@@ -1,7 +1,7 @@
 # My System Setup
 
 **My System Setup (MSS)** is a PowerShell-based toolkit to simplify the setup, configuration, and maintenance of new Windows systems.  
-It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps as well as Windows.
+It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps together with Windows updates.
 
 ## 🚀 Features
 
