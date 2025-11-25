@@ -1,7 +1,7 @@
 # My System Setup
 
 **My System Setup (MSS)** is a PowerShell-based toolkit to simplify the setup, configuration, and maintenance of new Windows systems.  
-It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps as well as Windows.
+It automates winget apps installation, PowerShell modules imports, system diagnostics and Git utilities. Additionally, it provides an easy-to-use function to update installed apps as well as Windows.
 
 ## 🚀 Features
 
@@ -13,11 +13,11 @@ It automates winget apps installation, PowerShell modules imports, system diagno
   - Programming tools
   - Game launchers
 - **Create User Folders:** Automatically sets up workspace directories with desktop shortcuts and Quick Access pinning.
-- **Clone Git Repositories:** Fetches repositories defined in configuration.
+- **Clone Git Repositories:** Fetches repositories from configuration file.
 
 ### 🔧 Utilities & Tools
 
-- **Git Utilities:** Creates an alias to amend the last commit and optionally push.
+- **Git Utilities:** Creates a shortcut to amend the last commit and optionally push.
 - **System Diagnostics:** Check system health, storage, and cleanup unused files.
 - **System Update Manager:** Update winget apps, PowerShell modules, Python packages, and Windows updates from one command.
 - **Dependency Provider:** Verify and install missing modules or apps.
@@ -36,10 +36,14 @@ MSS is provided as a PowerShell module and can be installed with the help of the
 
 1. Download [Powershell ModuleTools](https://github.com/JaxRaffnix/Powershell-ModuleTools).  
 2. Run its installer:
-    ```powershell
+    ```bash
     .\self-installer.ps1.
     ```
 3. Clone [My System Setup](https://github.com/JaxRaffnix/My-System-Setup)
+    ```bash
+    git clone https://github.com/JaxRaffnix/My-System-Setup.git
+    cd My-System-Setup
+    ```
 4. From its directory, run:
     ```powershell
     Install-FromDev .
@@ -106,7 +110,12 @@ For a full function documentation, please refer to the relevant help text by run
 
 ## ✅ TO DO
 
+- Alias for `Invoke-GitAmend` is not accessible.
 - Ensure C compiler works with installed Strawberry  
+- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
+  ```bash
+  "C:\Program Files (x86)" | winget install Blizzard.BattleNet
+  ```
 
 ### Unsure
 
@@ -116,4 +125,3 @@ For a full function documentation, please refer to the relevant help text by run
 
 - Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
 - Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
-- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
