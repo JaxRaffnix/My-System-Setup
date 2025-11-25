@@ -107,6 +107,7 @@ For a full function documentation, please refer to the relevant help text by run
 ## ✅ TO DO
 
 - Ensure C compiler works with installed Strawberry  
+- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
 
 ### Unsure
 
@@ -116,4 +117,3 @@ For a full function documentation, please refer to the relevant help text by run
 
 - Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
 - Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
-- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  

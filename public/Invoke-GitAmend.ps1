@@ -35,7 +35,16 @@ function Invoke-GitAmend {
     Test-Dependency "git" -Source "git.git" -App
 
     Write-Verbose "Changing location to repository: $Path"
+    if (-not (Test-Path -Path $Path)) {
+        Throw "Specified path '$Path' does not exist."
+    }
     Push-Location $Path
+
+    # Exit if not a git repo
+    $gitStatus = git rev-parse --is-inside-work-tree 2>$null
+    if ($LASTEXITCODE -ne 0 -or $gitStatus -ne 'true') {
+        Throw "Path '$Path' is not a git repository."
+    }
 
     try {
         git fetch --quiet | Out-Null
@@ -74,5 +83,5 @@ function Invoke-GitAmend {
 }
 
 # Create a short alias
-Set-Alias ga Invoke-GitAmend
-Set-Alias Git-Amend Invoke-GitAmend
+Set-Alias -Name ga -Value Invoke-GitAmend -Scope Global
+Set-Alias -Name Git-Amend -Value Invoke-GitAmend -Scope Global
