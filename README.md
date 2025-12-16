@@ -1,7 +1,7 @@
 # My System Setup
 
 **My System Setup (MSS)** is a PowerShell-based toolkit to simplify the setup, configuration, and maintenance of new Windows systems.  
-It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps together with Windows updates.
+It automates winget apps installation, PowerShell modules imports, system diagnostics, Git utilities, as well as an easy to use function to update installed apps as well as Windows.
 
 ## 🚀 Features
 
@@ -107,13 +107,9 @@ For a full function documentation, please refer to the relevant help text by run
 ## ✅ TO DO
 
 - Ensure C compiler works with installed Strawberry  
-
-### Unsure
-
-- Ebook reader `aquile` ID: `9P08T4JLTQNK`.
+- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
 
 ### Known Issues
 
 - Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
 - Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
-- Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
