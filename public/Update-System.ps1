@@ -75,7 +75,7 @@ function Update-System {
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
             Write-Verbose "Running winget upgrade in admin mode ..."
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
-                --disable-interactivity --include-unknown --include-pinned --silent 
+                --disable-interactivity --include-unknown --include-pinned --silent --unknown --recurse 
             Write-Verbose "Running winget upgrade in user mode ..."
             winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent 
@@ -96,7 +96,8 @@ function Update-System {
         Write-Verbose "Updating Windows..."
         try {
             Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
-            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop 2>&1 | Out-Host
+            $ProgressPreference = 'Continue'    # added to ensure progress bar is shown during updates
+            gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop
 
             if ((gsudo Get-WURebootStatus).RebootRequired) {
                 Write-Warning "A system reboot is required to complete the updates."
