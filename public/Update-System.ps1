@@ -112,19 +112,26 @@ function Update-System {
     if ($UpdatePip -and $PSCmdlet.ShouldProcess("Python packages", "Update")) {
         Write-Verbose "Updating Python packages via pip..."
         try {
-            Test-Dependency pip -App -Source Python.Python.3.13  
-            python.exe -m pip install --upgrade pip
+            Test-Dependency "python.exe -m pip" -App -Source Python.PythonInstallManager
+            pymanager install 3     # always updaet to latest version
+            python.exe -m pip install --upgrade pip  --disable-pip-version-check
 
-            $packagesJson = & pip list --outdated --format=json | ConvertFrom-Json
+            $packagesJson = & python.exe -m pip list --outdated --format=json | ConvertFrom-Json
             $packages = $packagesJson | ForEach-Object { $_.name }
 
-            foreach ($package in $packages) {
-                Write-Verbose "Updating package: $package"
-                & pip install --upgrade $package
+            if ($packages.Count -gt 0) {
+                Write-Verbose "Updating packages: $packages"
+                python.exe -m pip install --upgrade $packages
             }
+
+            if (-not $packagesJson -or $packagesJson.Count -eq 0) {
+                Write-Verbose "No outdated packages found."
+                return
+            }
+
             $updatedCategories += "Python packages"
         } catch {
-            Write-Error "Failed to update Python packages via pip: $_"
+            Write-Error "Failed to update Python or packages: $_"
         }
     }
 

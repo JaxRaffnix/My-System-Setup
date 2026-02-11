@@ -39,7 +39,7 @@ ProgrammingTools:
     - "Inkscape.Inkscape"
     - "MiKTeX.MiKTeX"
     - "StrawberryPerl.StrawberryPerl"
-    - "Python.Python.3.13"
+    - "Python.PythonInstallManager"
     - "Rufus.Rufus"
     - "MathWorks.MATLABRuntime"
     - "AnalogDevices.LTspice"

@@ -124,4 +124,4 @@ For a full function documentation, please refer to the relevant help text by run
 ### Known Issues
 
 - Some App IDs are strings, not descriptive names (e.g., WhatsApp `9NKSQGP7F2NH`).  
-- Python versions must be installed explicitly (e.g., `Python.Python.3.13`).  
+- Python modules in the gloabl env should be handeld better, eg pip-review, uv, etc.
