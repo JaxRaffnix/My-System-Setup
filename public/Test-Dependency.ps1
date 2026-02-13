@@ -49,7 +49,7 @@ function Test-Dependency {
     try {
         # Check if the command is already available
         Get-Command -Name $Command -ErrorAction Stop | Out-Null
-        Write-Verbose "Successully validated '$Command'."
+        Write-Verbose "Successfully validated '$Command'."
     }
     catch {
         Write-Warning "'$Command' is not installed or not available."
@@ -60,7 +60,7 @@ function Test-Dependency {
 
         if ($App) {
             Write-Verbose "Installing $Command via winget (AppId: $Source)..."
-            Install-App -Id $Source
+            Install-App -AppId $Source
         }
         elseif ($Module) {
             Write-Verbose "Installing $Command via PowerShell (Module: $Source)..."

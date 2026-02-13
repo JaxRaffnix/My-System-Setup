@@ -99,7 +99,7 @@ function Update-System {
             $ProgressPreference = 'Continue'    # added to ensure progress bar is shown during updates
             gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop
 
-            if ((gsudo Get-WURebootStatus).RebootRequired) {
+            if (gsudo Get-WURebootStatus -Silent) {
                 Write-Warning "A system reboot is required to complete the updates."
             }
             $updatedCategories += "Windows"
@@ -112,7 +112,7 @@ function Update-System {
     if ($UpdatePip -and $PSCmdlet.ShouldProcess("Python packages", "Update")) {
         Write-Verbose "Updating Python packages via pip..."
         try {
-            Test-Dependency "python.exe -m pip" -App -Source Python.PythonInstallManager
+            Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
             pymanager install 3     # always updaet to latest version
             python.exe -m pip install --upgrade pip  --disable-pip-version-check
 
