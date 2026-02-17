@@ -81,7 +81,3 @@ function Invoke-GitAmend {
         Pop-Location
     }
 }
-
-# Create a short alias
-Set-Alias -Name ga -Value Invoke-GitAmend -Scope Global
-Set-Alias -Name Git-Amend -Value Invoke-GitAmend -Scope Global

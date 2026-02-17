@@ -16,7 +16,7 @@ function Update-System {
     .PARAMETER UpdateApps
         Switch to enable updating applications via winget.
 
-    .PARAMETER UpdatePip
+    .PARAMETER UpdatePython
         Switch to enable updating Python packages installed via pip.
 
     .PARAMETER All
@@ -34,7 +34,7 @@ function Update-System {
         [switch]$UpdateWindows,
         [switch]$UpdatePSModules,
         [switch]$UpdateApps,
-        [switch]$UpdatePip,
+        [switch]$UpdatePython,
         [switch]$All
     )
 
@@ -43,7 +43,7 @@ function Update-System {
         $UpdateWindows   = $true
         $UpdatePSModules = $true
         $UpdateApps      = $true
-        $UpdatePip       = $true
+        $UpdatePython    = $true
     }
 
     # Ensure dependencies
@@ -109,29 +109,15 @@ function Update-System {
     }
 
     # Python packages
-    if ($UpdatePip -and $PSCmdlet.ShouldProcess("Python packages", "Update")) {
-        Write-Verbose "Updating Python packages via pip..."
+    if ($UpdatePython -and $PSCmdlet.ShouldProcess("Python", "Update")) {
+        Write-Verbose "Updating Python version..."
         try {
             Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
             pymanager install 3     # always updaet to latest version
-            python.exe -m pip install --upgrade pip  --disable-pip-version-check
-
-            $packagesJson = & python.exe -m pip list --outdated --format=json | ConvertFrom-Json
-            $packages = $packagesJson | ForEach-Object { $_.name }
-
-            if ($packages.Count -gt 0) {
-                Write-Verbose "Updating packages: $packages"
-                python.exe -m pip install --upgrade $packages
-            }
-
-            if (-not $packagesJson -or $packagesJson.Count -eq 0) {
-                Write-Verbose "No outdated packages found."
-                return
-            }
-
-            $updatedCategories += "Python packages"
+            
+            $updatedCategories += "Python"
         } catch {
-            Write-Error "Failed to update Python or packages: $_"
+            Write-Error "Failed to update Python: $_"
         }
     }
 

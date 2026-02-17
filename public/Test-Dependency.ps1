@@ -59,11 +59,11 @@ function Test-Dependency {
         }
 
         if ($App) {
-            Write-Verbose "Installing $Command via winget (AppId: $Source)..."
+            Write-Verbose "Installing $Source via winget..."
             Install-App -AppId $Source
         }
         elseif ($Module) {
-            Write-Verbose "Installing $Command via PowerShell (Module: $Source)..."
+            Write-Verbose "Installing $Source via PowerShell..."
             Install-PSModule -ModuleName $Source
         }
         else {

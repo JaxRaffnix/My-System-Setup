@@ -38,8 +38,10 @@ ProgrammingTools:
   winget:
     - "Inkscape.Inkscape"
     - "MiKTeX.MiKTeX"
+    - "geeksoftwareGmbH.PDF24Creator"
     - "StrawberryPerl.StrawberryPerl"
     - "Python.PythonInstallManager"
+    - "astral-sh.uv"  
     - "Rufus.Rufus"
     - "MathWorks.MATLABRuntime"
     - "AnalogDevices.LTspice"

@@ -65,8 +65,10 @@ For a full function documentation, please refer to the relevant help text by run
 
 - Uses categories defined in `/config/applications.yaml`.  
 - Highlights and their use case for some core category modules are:  
-  - **PSScriptTools:** `Show-Tree -InColor -ShowItem`  
-  - **Terminal-Icons:** `Get-ChildItem -Path . -Force`  
+  - **PSScriptTools:** 
+    - `Get-PSProfile` to view all existing profiles.
+    - `Show-Tree -InColor -ShowItem` graphical tree with files
+  - **Terminal-Icons:** Adds icons for files and folders in the terminal, e.g. `Get-ChildItem -Path . -Force`  
   - **PSReadLine:** auto-completion with `CTRL+SPACE`  
   - **PSWindowsUpdate:** `PSWritePDF`.
 
@@ -87,7 +89,6 @@ For a full function documentation, please refer to the relevant help text by run
 ### Invoke-GitAmend
 
 - Amend latest commit with optional message.  
-- Alias `ga` or `Git-Amend`.
 - Supports `git push --force-with-lease` if remote tracking exists.  
 
 ### Invoke-Diagnostics
@@ -110,7 +111,8 @@ For a full function documentation, please refer to the relevant help text by run
 
 ## ✅ TO DO
 
-- Alias for `Invoke-GitAmend` is not accessible.
+- add tests with pester
+- should the config files be stored in a more user accessible location for upating it, e.g., `Documents\MySystemSetup`? Probably not, because I'm the only intended user and i want to keep my config up to date in the repo.
 - Ensure C compiler works with installed Strawberry  
 - Battlenet requires a specific install location (e.g., `C:\Program Files (x86)`).  
   ```bash
@@ -120,6 +122,7 @@ For a full function documentation, please refer to the relevant help text by run
 ### Unsure
 
 - Ebook reader `aquile` ID: `9P08T4JLTQNK`.
+- pdf24 creater maybe to core category?
 
 ### Known Issues
 
