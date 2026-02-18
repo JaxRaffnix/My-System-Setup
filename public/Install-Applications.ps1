@@ -15,9 +15,6 @@ function Install-Applications {
 .PARAMETER All
     Switch. Install all categories from the configuration.
 
-.PARAMETER Init
-    Switch. Install the 'Init' category.
-
 .PARAMETER Core
     Switch. Install the 'Core' category.
 
@@ -43,7 +40,6 @@ function Install-Applications {
     [CmdletBinding(SupportsShouldProcess=$true)]
     param (
         [switch]$All,
-        [switch]$Init,
         [switch]$Core,
         [switch]$Messengers,
         [switch]$ProgrammingTools,
@@ -53,42 +49,58 @@ function Install-Applications {
         [string]$ConfigPath = "$PSScriptRoot/../config/applications.yaml"
     )
 
-    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
-    gsudo cache on | Out-Null
+    # All feature switch names except -All and common parameters
+    $FeatureParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Keys |
+                         Where-Object { $_ -ne 'All' -and $_ -notmatch '^(Verbose|Debug|ErrorAction|WarningAction|InformationAction|OutVariable|OutBuffer|PipelineVariable)$' }
+    # If -All is used, activate all feature switches dynamically
+    if ($All) {
+        foreach ($param in $FeatureParameters) {
+            Set-Variable -Name $param -Value $true
+        }
+    }
+    # Determine which switches are enabled
+    $EnabledFeatures = $FeatureParameters |
+        Where-Object { (Get-Variable $_ -ValueOnly -ErrorAction SilentlyContinue) }
+    if (-not $EnabledFeatures) {
+        throw "No configuration options were selected. Use -All or specify individual switches."
+    }
 
     # Load the YAML file
     try {
         Test-Dependency -Command "ConvertFrom-Yaml" -Module -Source "powershell-yaml"
-        $yamlContent = Get-Content -Path $ConfigPath -Raw
-        $appsConfig = ConvertFrom-Yaml $yamlContent
+        $appsConfig = Get-Content $ConfigPath -Raw | ConvertFrom-Yaml
     }
     catch {
         throw "Failed to load applications YAML: $_"
     }
 
-    # Determine which categories to install
-    $categoriesToInstall = @()
+    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
+    gsudo cache on | Out-Null
+
+    $switchMap = @{
+        Core = $Core
+        Messengers = $Messengers
+        ProgrammingTools = $ProgrammingTools
+        Games = $Games
+    }
+
+    # Determine selected categories
     if ($All) {
         $categoriesToInstall = $appsConfig.Keys
     }
     else {
-        foreach ($cat in @('Init','Core','Messengers','ProgrammingTools','Games')) {
-        if ($PSBoundParameters.ContainsKey($cat) -and $PSBoundParameters[$cat]) {
-            if ($appsConfig.ContainsKey($cat)) {
-                $categoriesToInstall += $cat
+        $categoriesToInstall = $switchMap.GetEnumerator() |
+            Where-Object { $_.Value } |
+            ForEach-Object { 
+                if ($appsConfig.ContainsKey($_.Key)) { $_.Key }
+                else { Write-Error "Category '$($_.Key)' does not exist in config." }
             }
-            else {
-                Write-Error "Category '$cat' does not exist in config."
-            }
-        }
-    }
     }
 
     if (-not $categoriesToInstall) {
         throw "No categories selected. Use -All or one of the category switches."
     }
 
-    # Iterate through each category
     foreach ($cat in $categoriesToInstall) {
         Write-Verbose "Installing category '$cat'..."
         $categoryData = $appsConfig[$cat] 
@@ -116,7 +128,6 @@ function Install-Applications {
                     }
                     catch {
                         Write-Error "Failed to install app '$appId': $($_.Exception.Message)"
-                        Write-Error "Call stack:`n$($_.ScriptStackTrace)"
                     }
                 }
             }

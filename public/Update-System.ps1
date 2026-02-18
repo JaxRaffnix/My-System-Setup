@@ -38,14 +38,22 @@ function Update-System {
         [switch]$All
     )
 
-    # Handle -All flag
+    # All feature switch names except -All and common parameters
+    $FeatureParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Keys |
+                         Where-Object { $_ -ne 'All' -and $_ -notmatch '^(Verbose|Debug|ErrorAction|WarningAction|InformationAction|OutVariable|OutBuffer|PipelineVariable)$' }
+    # If -All is used, activate all feature switches dynamically
     if ($All) {
-        $UpdateWindows   = $true
-        $UpdatePSModules = $true
-        $UpdateApps      = $true
-        $UpdatePython    = $true
+        foreach ($param in $FeatureParameters) {
+            Set-Variable -Name $param -Value $true
+        }
     }
-
+    # Determine which switches are enabled
+    $EnabledFeatures = $FeatureParameters |
+        Where-Object { (Get-Variable $_ -ValueOnly -ErrorAction SilentlyContinue) }
+    if (-not $EnabledFeatures) {
+        throw "No configuration options were selected. Use -All or specify individual switches."
+    }
+    
     # Ensure dependencies
     Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
 

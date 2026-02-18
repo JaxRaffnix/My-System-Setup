@@ -36,8 +36,6 @@ function Remove-UnwantedShortcuts {
 
     Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
 
-    gsudo cache on | Out-Null
-
     foreach ($Path in $Paths) {
         if (-not (Test-Path $Path)) {
             Throw "The path '$Path' does not exist. Skipping..."
