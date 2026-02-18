@@ -1,8 +1,7 @@
 # CLEANUP TASKS
 
-Write-Host "Running Cleanup Tasks..." -ForegroundColor Yellow
-
 # Remove Broken Shortcuts
+Write-Host "Removing Broken Shortcuts..." -ForegroundColor Yellow
 $Paths = @(
     "$env:USERPROFILE\Desktop",
     "$env:PUBLIC\Desktop",
@@ -12,14 +11,18 @@ $Paths = @(
 Remove-UnwantedShortcuts -Paths $Paths -RemoveBroken
 
 # Disk Cleanup
+Write-Host "Running Disk Cleanup..." -ForegroundColor Yellow
 cleanmgr /sagerun:1 /autoclean
 
-# Empty Recycle Bin
-Clear-RecycleBin -Force -ErrorAction SilentlyContinue
-
 # Clear Temp and Cache
+Write-Host "Clearing Temporary Files and Cache..." -ForegroundColor Yellow
 Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
 
 # clear broken path environment variables
+Write-Host "Removing Broken Path Environment Variables..." -ForegroundColor Yellow
 Remove-BrokenPaths
+
+# Empty Recycle Bin
+Write-Host "Emptying Recycle Bin..." -ForegroundColor Yellow
+Clear-RecycleBin -Force -ErrorAction SilentlyContinue

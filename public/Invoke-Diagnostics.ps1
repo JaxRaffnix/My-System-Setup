@@ -62,10 +62,12 @@ function Invoke-Diagnostics {
     if ($Cleanup) { $categories['Cleanup'] = 'cleanup.ps1' }
 
     Write-Verbose "Running diagnostic categories: $($categories -join ', ')" 
+
+    $ProgressPreference = 'Continue'    # added to ensure progress bar is shown during updates
     
     foreach ($category in $categories.Keys) {
         Add-Content -Path $ReportFile -Value "`n===== $category =====`n"
-        Write-Host "`n=== Running $category ===" -ForegroundColor Cyan
+        Write-Host "`n=== Running Category $category ===" -ForegroundColor Cyan
 
         $scriptPath = Join-Path $ConfigPath $categories[$category]
         if (-not (Test-Path $scriptPath)) {
@@ -75,8 +77,7 @@ function Invoke-Diagnostics {
         }
 
         try {
-            $result = & $scriptPath 2>&1 | Tee-Object -Variable result
-            Add-Content -Path $ReportFile -Value $result
+            & $scriptPath 2>&1 | Tee-Object -FilePath $ReportFile -Append
         } catch {
             Add-Content -Path $ReportFile -Value "[$category] failed: $($_.Exception.Message)"
             Write-Error "[$category] failed: $($_.Exception.Message)"
