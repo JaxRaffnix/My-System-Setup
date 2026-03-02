@@ -52,7 +52,7 @@ function Test-Dependency {
         Write-Verbose "Successfully validated '$Command'."
     }
     catch {
-        Write-Warning "'$Command' is not installed or not available."
+        Write-Verbose "'$Command' is not installed or not available."
 
         if ($DisableInstall) {
             throw "Automatic install for missing $Command is disabled. Please install $Source manually."

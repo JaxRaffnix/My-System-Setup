@@ -118,6 +118,8 @@ For a full function documentation, please refer to the relevant help text by run
   ```bash
   "C:\Program Files (x86)" | winget install Blizzard.BattleNet
   ```
+- invoke diagnostics can only either display live console output and log to file, or dont write every new progress bar line. not both
+- add to path: `C:\Users\Jax\AppData\Local\Python\bin`
 
 ### Unsure
 

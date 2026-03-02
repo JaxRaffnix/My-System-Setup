@@ -9,7 +9,7 @@ Get-PhysicalDisk |
 # Disk Usage Summary
 Write-Host "Disk Usage Summary:" -ForegroundColor Yellow
 Get-PSDrive -PSProvider FileSystem |
-    Select-Object Name, Used, Free, @{Name="Used(%)"; Expression={[math]::Round(($_.Used / ($_.Used + $_.Free)) * 100, 2)}} |
+    Select-Object Name, @{Name="Used(GB)"; Expression={[math]::Round($_.Used/1GB, 2)}}, @{Name="Free(GB)"; Expression={[math]::Round($_.Free/1GB, 2)}}, @{Name="Used(%)"; Expression={[math]::Round(($_.Used / ($_.Used + $_.Free)) * 100, 2)}} |
     Format-Table -AutoSize | Out-String
 
 # Large Files (>500MB)

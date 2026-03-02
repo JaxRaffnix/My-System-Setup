@@ -122,6 +122,7 @@ function Update-System {
         try {
             Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
             pymanager install 3     # always updaet to latest version
+            py install --refresh
             
             $updatedCategories += "Python"
         } catch {
