@@ -7,23 +7,23 @@ function Update-System {
         Provides a unified update process for the system. 
         Uses gsudo to elevate where required.
 
-    .PARAMETER UpdateWindows
+    .PARAMETER Windows
         Switch to enable updating Windows updates.
 
-    .PARAMETER UpdatePSModules
+    .PARAMETER PSModules
         Switch to enable updating PowerShell modules.
 
-    .PARAMETER UpdateApps
+    .PARAMETER Apps
         Switch to enable updating applications via winget.
 
-    .PARAMETER UpdatePython
+    .PARAMETER Python
         Switch to enable updating Python packages installed via pip.
 
     .PARAMETER All
         If specified, enables all update types.
 
     .EXAMPLE
-        Update-System -UpdateApps -UpdatePSModules
+        Update-System -Apps -PSModules
 
     .EXAMPLE
         Update-System -All
@@ -31,10 +31,10 @@ function Update-System {
 
     [CmdletBinding(SupportsShouldProcess=$true)]
     param (
-        [switch]$UpdateWindows,
-        [switch]$UpdatePSModules,
-        [switch]$UpdateApps,
-        [switch]$UpdatePython,
+        [switch]$Windows,
+        [switch]$PSModules,
+        [switch]$Apps,
+        [switch]$Python,
         [switch]$All
     )
 
@@ -64,7 +64,7 @@ function Update-System {
     $updatedCategories = @()
 
     # PowerShell Modules
-    if ($UpdatePSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
+    if ($PSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
         Write-Verbose "Updating PowerShell modules..."
         try {
             gsudo Update-Module 
@@ -75,7 +75,7 @@ function Update-System {
     }
 
     # Applications via winget
-    if ($UpdateApps -and $PSCmdlet.ShouldProcess("Applications", "Update")) {
+    if ($Apps -and $PSCmdlet.ShouldProcess("Applications", "Update")) {
         Write-Verbose "Updating applications via winget..."
         try {
             $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
@@ -100,7 +100,7 @@ function Update-System {
     }
 
     # Windows Updates
-    if ($UpdateWindows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
+    if ($Windows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
         Write-Verbose "Updating Windows..."
         try {
             Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
@@ -117,7 +117,7 @@ function Update-System {
     }
 
     # Python packages
-    if ($UpdatePython -and $PSCmdlet.ShouldProcess("Python", "Update")) {
+    if ($Python -and $PSCmdlet.ShouldProcess("Python", "Update")) {
         Write-Verbose "Updating Python version..."
         try {
             Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
