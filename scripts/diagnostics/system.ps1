@@ -3,7 +3,7 @@
 # Windows Defender Status
 Write-Host "Windows Defender Status:" -ForegroundColor Yellow
 Get-MpComputerStatus |
-    Select-Object AMServiceEnabled, RealTimeProtectionEnabled, AntivirusEnabled, NISProtectionEnabled |
+    Select-Object AMServiceEnabled, RealTimeProtectionEnabled, AntivirusEnabled, NISEnabled |
     Format-List | Out-String
 
 # System Reliability Issues (Last 7 Days)
