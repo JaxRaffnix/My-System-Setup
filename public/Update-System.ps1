@@ -65,7 +65,7 @@ function Update-System {
 
     # PowerShell Modules
     if ($PSModules -and $PSCmdlet.ShouldProcess("PowerShell modules", "Update")) {
-        Write-Verbose "Updating PowerShell modules..."
+        Write-Host "Updating PowerShell modules..." -ForegroundColor Cyan
         try {
             gsudo Update-Module 
             $updatedCategories += "PowerShell modules"
@@ -76,7 +76,7 @@ function Update-System {
 
     # Applications via winget
     if ($Apps -and $PSCmdlet.ShouldProcess("Applications", "Update")) {
-        Write-Verbose "Updating applications via winget..."
+        Write-Host "Updating applications via winget..." -ForegroundColor Cyan
         try {
             $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
                                 Select-Object -ExpandProperty Name
@@ -101,7 +101,7 @@ function Update-System {
 
     # Windows Updates
     if ($Windows -and $PSCmdlet.ShouldProcess("Windows", "Update")) {
-        Write-Verbose "Updating Windows..."
+        Write-Host "Updating Windows..." -ForegroundColor Cyan
         try {
             Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
             $ProgressPreference = 'Continue'    # added to ensure progress bar is shown during updates
@@ -118,7 +118,7 @@ function Update-System {
 
     # Python packages
     if ($Python -and $PSCmdlet.ShouldProcess("Python", "Update")) {
-        Write-Verbose "Updating Python version..."
+        Write-Host "Updating Python version..." -ForegroundColor Cyan
         try {
             Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
             pymanager install 3     # always updaet to latest version
