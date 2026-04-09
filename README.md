@@ -122,6 +122,9 @@ For a full function documentation, please refer to the relevant help text by run
 - add to path: `C:\Users\Jax\AppData\Local\Python\bin`
 - script system: startup apps shows all apps, even the ones that are disabled. add a filter.
 
+- add docker, pandoc to winget.
+- in system setup: Enable Windows Update->Advanced Options->Receive updates for other Microsoft Products. 
+
 ### Unsure
 
 - Ebook reader `aquile` ID: `9P08T4JLTQNK`.
