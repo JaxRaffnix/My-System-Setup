@@ -121,7 +121,7 @@ function Update-System {
         Write-Host "Updating Python version..." -ForegroundColor Cyan
         try {
             Test-Dependency "pymanager" -App -Source Python.PythonInstallManager
-            pymanager install 3     # always updaet to latest version
+            pymanager install 3 --quiet     # always update to latest version
             py install --refresh
             
             $updatedCategories += "Python"
