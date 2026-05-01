@@ -124,6 +124,7 @@ For a full function documentation, please refer to the relevant help text by run
 
 - add docker, pandoc to winget.
 - in system setup: Enable Windows Update->Advanced Options->Receive updates for other Microsoft Products. 
+- add this as a script for vs code context menu: [text](https://stackoverflow.com/questions/75273110/add-open-with-visual-studio-code-shortcut-to-right-click-menu)
 
 ### Unsure
 
