@@ -26,6 +26,8 @@ Core:
     - "Microsoft.OfficeDeploymentTool"
     - Microsoft.PowerShell
     - Microsoft.VisualStudio.2022.BuildTools
+    - Voidstar.FilePilot 
+    - Microsoft.NuGet
 
 Messengers:
   winget:
@@ -47,6 +49,7 @@ ProgrammingTools:
     - "AnalogDevices.LTspice"
     - "MSYS2.MSYS2"
     - "GitHub.cli"
+    - ImageMagick.ImageMagick
 
 Games:
   winget:
