@@ -35,6 +35,7 @@ function Update-System {
         [switch]$PSModules,
         [switch]$Apps,
         [switch]$Python,
+        [switch]$Nvidia,
         [switch]$All
     )
 
@@ -127,6 +128,18 @@ function Update-System {
             $updatedCategories += "Python"
         } catch {
             Write-Error "Failed to update Python: $_"
+        }
+    }
+
+    if ($Nvidia -and $PSCmdlet.ShouldProcess("Nvidia", "Update")) {
+        try {
+            Test-Dependency "TinyNvidiaUpdateChecker" -App -Source "Hawaii_Beach.TinyNvidiaUpdateChecker"
+            gsudo TinyNvidiaUpdateChecker --confirm-dl --quiet
+
+            $updatedCategories += "Nvidia"
+        }
+        catch {
+            Write-Error "Failed to update Nvidia drivers: $_"
         }
     }
 
