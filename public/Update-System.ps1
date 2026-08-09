@@ -82,13 +82,20 @@ function Update-System {
             $AllowedShortCuts = Get-ChildItem "$env:USERPROFILE\Desktop" -Filter "*.lnk" -ErrorAction SilentlyContinue |
                                 Select-Object -ExpandProperty Name
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
+
+            Write-Verbose "Upgrading Battle.net ..."
+
+            gsudo --% winget upgrade --id Blizzard.BattleNet --exact --include-unknown --accept-package-agreements --accept-source-agreements --disable-interactivity --silent --location "C:\Program Files (x86)"
+
             Write-Verbose "Running winget upgrade in admin mode ..."
             gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent --unknown --recurse 
-            Write-Verbose "Running winget upgrade in user mode ..."
+            
+                Write-Verbose "Running winget upgrade in user mode ..."
             winget upgrade --all --accept-package-agreements --accept-source-agreements `
                 --disable-interactivity --include-unknown --include-pinned --silent 
-            $updatedCategories += "Winget applications"
+            
+                $updatedCategories += "Winget applications"
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
@@ -105,7 +112,6 @@ function Update-System {
         Write-Host "Updating Windows..." -ForegroundColor Cyan
         try {
             Test-Dependency "Get-WindowsUpdate" -Module -Source PSWindowsUpdate
-            $ProgressPreference = 'Continue'    # added to ensure progress bar is shown during updates
             gsudo Get-WindowsUpdate -Download -Install -AcceptAll -IgnoreReboot -ErrorAction Stop
 
             if (gsudo Get-WURebootStatus -Silent) {
