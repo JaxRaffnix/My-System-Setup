@@ -83,22 +83,25 @@ function Update-System {
                                 Select-Object -ExpandProperty Name
             Test-Dependency -Command winget -Source Microsoft.AppInstaller -App
 
-            Write-Verbose "Upgrading Battle.net ..."
-
-            gsudo --% winget upgrade --id Blizzard.BattleNet --exact --include-unknown --accept-package-agreements --accept-source-agreements --disable-interactivity --silent --location "C:\Program Files (x86)"
+            Write-Verbose "Pinning Battle.net ..."
+            winget pin add --id Blizzard.BattleNet --exact
 
             Write-Verbose "Running winget upgrade in admin mode ..."
-            gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements `
-                --disable-interactivity --include-unknown --include-pinned --silent --unknown --recurse 
-            
-                Write-Verbose "Running winget upgrade in user mode ..."
-            winget upgrade --all --accept-package-agreements --accept-source-agreements `
-                --disable-interactivity --include-unknown --include-pinned --silent 
-            
-                $updatedCategories += "Winget applications"
+            gsudo winget upgrade --all --accept-package-agreements --accept-source-agreements --disable-interactivity --include-unknown --silent --unknown --recurse
+
+            Write-Verbose "Running winget upgrade in user mode ..."
+            winget upgrade --all --accept-package-agreements --accept-source-agreements --disable-interactivity --include-unknown --silent
+
+            Write-Verbose "Upgrading Battle.net ..."
+            gsudo --% winget upgrade --id Blizzard.BattleNet --exact --include-unknown --accept-package-agreements --accept-source-agreements --disable-interactivity --silent --location "C:\Program Files (x86)"
+
+            $updatedCategories += "Winget applications"
         } catch {
             Write-Error "Failed to update applications via winget: $_"
         } finally {
+            Write-Verbose "Removing Battle.net pin ..."
+            winget pin remove --id Blizzard.BattleNet --exact
+
             $DesktopPaths = @(
                 "$env:USERPROFILE\Desktop",
                 "$env:PUBLIC\Desktop"
