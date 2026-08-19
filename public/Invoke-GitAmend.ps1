@@ -56,6 +56,12 @@ function Invoke-GitAmend {
 
         git add -A
 
+        $hasChanges = (git status --porcelain).Length -gt 0
+        if (-not $hasChanges) {
+            Write-Host "No changes detected to amend." -ForegroundColor Green
+            return
+        }
+
         if ($Message) {
             git commit --amend -m $Message
         } else {
