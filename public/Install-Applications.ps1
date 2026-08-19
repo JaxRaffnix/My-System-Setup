@@ -124,7 +124,12 @@ function Install-Applications {
             foreach ($appId in $categoryData.winget) {
                 if ($PSCmdlet.ShouldProcess("App: $appId", "Install winget application")) {
                     try {
-                        Install-App -AppId $appId
+                        if ($appId -eq "Blizzard.BattleNet") {
+                            Write-Verbose "Installing Battle.net to C:\Program Files (x86) ..."
+                            winget install --id $appId --exact --accept-package-agreements --accept-source-agreements --silent --location "C:\Program Files (x86)"
+                        } else {
+                            Install-App -AppId $appId
+                        }
                     }
                     catch {
                         Write-Error "Failed to install app '$appId': $($_.Exception.Message)"
