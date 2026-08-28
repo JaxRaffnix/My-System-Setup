@@ -35,6 +35,7 @@ Messengers:
     - "OpenWhisperSystems.Signal"
     - "Mozilla.Thunderbird"
     - "9NKSQGP7F2NH"  # WhatsApp
+    - "Telegram.TelegramDesktop"
 
 ProgrammingTools:
   winget:
