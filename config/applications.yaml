@@ -28,6 +28,7 @@ Core:
     - Microsoft.VisualStudio.2022.BuildTools
     - Voidstar.FilePilot 
     - Microsoft.NuGet
+    - GnuWin32.Make 
 
 Messengers:
   winget:
